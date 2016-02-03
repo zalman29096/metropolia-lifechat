@@ -6,6 +6,7 @@
 package root;
 
 import java.util.ArrayList;
+import javax.ws.rs.client.Client;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,6 +22,8 @@ public class User {
     private String role;
     private ArrayList<Integer> rooms;
     private String password;
+    private String username;
+    
 
     public User() {
     }
@@ -30,6 +33,7 @@ public class User {
         this.lastName = lastName;
         this.role = role;
         this.password = password;
+        
     }
     
     @XmlElement
@@ -39,6 +43,15 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    @XmlElement
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
     @XmlElement

@@ -6,6 +6,7 @@
 package root;
 
 import java.util.HashMap;
+import javax.ws.rs.client.Client;
 
 /**
  *
@@ -13,9 +14,11 @@ import java.util.HashMap;
  */
 public class Users {
     private final HashMap<String, User> users;
+    private final HashMap<String, Client> clients;
     
     private Users() {
         this.users = new HashMap();
+        this.clients = new HashMap();
     }
     
     public static Users getInstance() {
@@ -27,9 +30,17 @@ public class Users {
         private static final Users INSTANCE = new Users();
     }
     
-    public void addUser(String username, User user){
+    public boolean addUser(String username, User user){
         if (!this.users.containsKey(username)){
             this.users.put(username, user);
+            return true;
+        }else
+            return false;
+    }
+    
+    public void addUserClient(String username, Client client){
+        if (!this.users.containsKey(username)){
+            this.clients.put(username, client);
         }
     }
     

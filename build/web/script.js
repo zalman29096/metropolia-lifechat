@@ -4,23 +4,44 @@
  * and open the template in the editor.
  */
 $(document).ready(function () {
-
-    $('#signUp').click(function (event) {
-        var username = $('#signUpUsername').val();
+    $("#role").change(function(){
+        if($(this).val() === "orderly") $("#rooms-select").hide();
+        else $("#rooms-select").show();
+    });
+    $("#register-show").click(function(){
+        $(".login-box").hide();
+        $(".register-box").show();
+    });
+    $("#login-show").click(function(){
+        $(".login-box").show();
+        $(".register-box").hide();
+    });
+    $('#signup-form').submit(function (e) {
+        e.preventDefault();
         var x2js = new X2JS();
-        var form = $("#signUpForm").serializeJSON();
+        var form = $(this).serializeJSON();
         var xmlDoc = x2js.json2xml(form);
-        var url = '/Project/rest/auth/signUp/' + username;
+        var url = '/Project/rest/auth/signUp';
         $.ajax({
             type: 'POST',
             url: url,
             contentType: 'application/xml',
             processData: false,
-            data: xmlDoc
+            data: xmlDoc,
+            success : function(data){
+                if(data == "true"){
+                    $(".login-box").show();
+                    $(".register-box").hide(); 
+                    $("#user-registered").hide();
+                }else{
+                    $("#user-registered").show();
+                }
+            }
         });
     });
 
-    $('#signIn').click(function (event) {
+    $('#login-form').submit(function (e) {
+        e.preventDefault();
         var username = $('#signInUsername').val();
         var password = $('#signInPassword').val();
         var url = '/Project/rest/auth/signIn/' + username + '/' + password;

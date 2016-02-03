@@ -7,6 +7,9 @@ package root;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,8 +20,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 /**
  *
@@ -31,11 +37,11 @@ public class UsersResource {
     private HttpServletRequest request;
 
     private final Users users;
-
+    
     public UsersResource() {
         this.users = Users.getInstance();
     }
-
+    
     @GET
     public boolean checkSession() {
         HttpSession session = request.getSession(false);
@@ -47,22 +53,42 @@ public class UsersResource {
         HttpSession session = request.getSession(false);
         session.invalidate();
     }
-
+    /**
+     * Add a new user to users collection
+     * @param user - XML document from client, representing user object
+     * @return 
+     */
+ 
     @POST
-    @Path("/signUp/{username}")
+    @Path("/signUp")
     @Consumes(MediaType.APPLICATION_XML)
-    public void addUsers(@PathParam("username") String username, User user) {
-        this.users.addUser(username, user);
+    public boolean addUsers(User user) {
+        return this.users.addUser(user.getUsername(), user);
     }
 
+    /**
+     * Implements login functionality and HTTPAuth
+     * @param username 
+     * @param password
+     * @return 
+     */
     @POST
     @Path("/signIn/{username}/{password}")
     public boolean login(@PathParam("username") String username, @PathParam("password") String password) {
-        if (this.users.signIn(username, password)) {
+        if (this.users.signIn(username, password)){
             HttpSession session = request.getSession(true);
             session.setAttribute("username", username);
             return true;
         }
         return false;
+    }
+    
+    @PermitAll
+    @GET
+    @Path("/cabinet")
+    @Produces(MediaType.TEXT_HTML)
+    public String showCabinet(){
+        return "<html> " + "<title>" + "Hello Jersey" + "</title>"
+        + "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
     }
 }
