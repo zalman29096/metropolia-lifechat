@@ -29,7 +29,7 @@ public class PrivateChats {
         private static final PrivateChats INSTANCE = new PrivateChats();
     }
 
-    private boolean addChat(String username, String chatUsername) {
+    /*private boolean addChat(String username, String chatUsername) {
         if (this.privateChats.containsKey(username)) {
             if (this.privateChats.get(username).contains(chatUsername)) {
                 return false;
@@ -38,5 +38,5 @@ public class PrivateChats {
             }
             
         }
-    }
+    }*/
 }

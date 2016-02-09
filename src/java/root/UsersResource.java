@@ -6,6 +6,7 @@
 package root;
 
 import java.util.ArrayList;
+import javax.ejb.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -22,15 +23,21 @@ import javax.ws.rs.core.MediaType;
  * @author kirak
  */
 @Path("/users")
+@Singleton
 public class UsersResource {
+
+    // public static String username;
+    public boolean statusOfRooms = false;
+    public ChatsCollection chats;
 
     @Context
     private HttpServletRequest request;
 
     private final Users users;
-    
+
     public UsersResource() {
         this.users = Users.getInstance();
+        this.chats = ChatsCollection.getInstance();
     }
 
     @GET
@@ -54,11 +61,11 @@ public class UsersResource {
         }
         return username;
     }
-    
+
     @Path("/user")
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public User getUser(){
+    public User getUser() {
         String username = this.checkSession();
         return this.users.getUser(username);
     }
@@ -84,6 +91,9 @@ public class UsersResource {
     @Path("/auth/signUp/{password}")
     @Consumes(MediaType.APPLICATION_XML)
     public boolean addUsers(User user, @PathParam("password") String password) {
+        if (!this.statusOfRooms){
+            this.createRoomChats(5);
+        }
         user.Password(password);
         return this.users.addUser(user.getUsername(), user);
     }
@@ -101,9 +111,16 @@ public class UsersResource {
         if (this.users.signIn(username, password)) {
             HttpSession session = request.getSession(true);
             session.setAttribute("username", username);
+            //this.username = username;
             return true;
         }
         return false;
     }
 
+    private void createRoomChats(int amount) {
+        for (int i = 0; i < amount; i++) {
+            this.chats.addRoomChat(i);
+        }
+        this.statusOfRooms = true;
+    }
 }

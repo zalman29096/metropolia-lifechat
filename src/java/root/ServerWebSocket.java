@@ -23,13 +23,14 @@ import javax.websocket.server.ServerEndpoint;
  */
 @ServerEndpoint(value = "/endpoint", encoders = {ChatMessageEncoder.class}, decoders = {ChatMessageDecoder.class})
 public class ServerWebSocket {
-    
-    
+
     private static final Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnOpen
     public void onOpen(Session peer) {
         peers.add(peer);
+        /*peer.getUserProperties().put(key, peer)
+        System.out.println(UsersResource.username);*/
     }
 
     @OnMessage
