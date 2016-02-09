@@ -6,7 +6,6 @@
 package root;
 
 import java.util.ArrayList;
-import javax.ws.rs.client.Client;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -20,31 +19,30 @@ public class User {
     private String firstName;
     private String lastName;
     private String role;
-    private ArrayList<Integer> rooms;
+    private ArrayList<String> rooms;
     private String password;
     private String username;
-    
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String role,String password) {
+    public User(String firstName, String lastName, String role, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
         this.password = password;
-        
+        this.rooms = new ArrayList<>();
+
     }
-    
-    @XmlElement
-    public String getPassword() {
+
+    public String Password() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void Password(String password) {
         this.password = password;
     }
-    
+
     @XmlElement
     public String getUsername() {
         return username;
@@ -53,12 +51,12 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     @XmlElement
     public String getFirstName() {
         return firstName;
     }
-    
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -82,11 +80,11 @@ public class User {
     }
 
     @XmlElement
-    public ArrayList<Integer> getRooms() {
+    public ArrayList<String> getRooms() {
         return rooms;
     }
 
-    public void setRooms(ArrayList<Integer> rooms) {
+    public void setRooms(ArrayList<String> rooms) {
         this.rooms = rooms;
     }
 

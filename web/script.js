@@ -4,53 +4,60 @@
  * and open the template in the editor.
  */
 $(document).ready(function () {
-    $("#role").change(function(){
-        if($(this).val() === "orderly") $("#rooms-select").hide();
-        else $("#rooms-select").show();
+
+    $("#role").change(function () {
+        if ($(this).val() === "orderly")
+            $("#rooms-select").hide();
+        else
+            $("#rooms-select").show();
     });
-    $("#register-show").click(function(){
+
+    $("#register-show").click(function () {
         $(".login-box").hide();
         $(".register-box").show();
     });
-    $("#login-show").click(function(){
+
+    $("#login-show").click(function () {
         $(".login-box").show();
         $(".register-box").hide();
     });
-    $('#signup-form').submit(function (e) {
+
+    $("#signup-form").submit(function (e) {
         e.preventDefault();
         var x2js = new X2JS();
         var form = $(this).serializeJSON();
+        console.log(form);
         var xmlDoc = x2js.json2xml(form);
-        var url = '/Project/rest/auth/signUp';
+        var url = "/Project/rest/users/auth/signUp/" + $("#password").val();
         $.ajax({
             type: 'POST',
             url: url,
             contentType: 'application/xml',
             processData: false,
             data: xmlDoc,
-            success : function(data){
-                if(data == "true"){
+            success: function (data) {
+                if (data === "true") {
                     $(".login-box").show();
-                    $(".register-box").hide(); 
+                    $(".register-box").hide();
                     $("#user-registered").hide();
-                }else{
+                } else {
                     $("#user-registered").show();
                 }
             }
         });
     });
 
-    $('#login-form').submit(function (e) {
+    $("#login-form").submit(function (e) {
         e.preventDefault();
-        var username = $('#signInUsername').val();
-        var password = $('#signInPassword').val();
-        var url = '/Project/rest/auth/signIn/' + username + '/' + password;
+        var username = $("#signInUsername").val();
+        var password = $("#signInPassword").val();
+        var url = '/Project/rest/users/auth/signIn/' + username + '/' + password;
         $.ajax({
             type: 'POST',
             url: url,
             success: function (data) {
                 if (data === "true") {
-                    window.location.replace("/Project/authenticated.html");
+                    window.location.replace("/Project/cabinet.html");
                 } else {
                     alert("no");
                 }

@@ -6,13 +6,7 @@
 package root;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -20,17 +14,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 
 /**
  *
  * @author kirak
  */
-@Path("/auth")
+@Path("/users")
 public class UsersResource {
 
     @Context
@@ -41,54 +32,78 @@ public class UsersResource {
     public UsersResource() {
         this.users = Users.getInstance();
     }
-    
+
     @GET
-    public boolean checkSession() {
+    @Produces(MediaType.APPLICATION_XML)
+    public ArrayList<User> getUsers() {
+        return this.users.getUsers(this.checkSession());
+    }
+
+    /**
+     * Checks the session
+     *
+     * @return
+     */
+    @Path("/auth")
+    @GET
+    public String checkSession() {
         HttpSession session = request.getSession(false);
-        return session != null;
+        String username = null;
+        if (session != null) {
+            username = session.getAttribute("username").toString();
+        }
+        return username;
     }
     
+    @Path("/user")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public User getUser(){
+        String username = this.checkSession();
+        return this.users.getUser(username);
+    }
+
+    /**
+     * Log out and invalidate the session
+     */
+    @Path("/auth")
     @POST
-    public void logOut(){
+    public void logOut() {
         HttpSession session = request.getSession(false);
         session.invalidate();
     }
+
     /**
      * Add a new user to users collection
+     *
      * @param user - XML document from client, representing user object
-     * @return 
+     * @param password
+     * @return
      */
- 
     @POST
-    @Path("/signUp")
+    @Path("/auth/signUp/{password}")
     @Consumes(MediaType.APPLICATION_XML)
-    public boolean addUsers(User user) {
+    public boolean addUsers(User user, @PathParam("password") String password) {
+        user.Password(password);
         return this.users.addUser(user.getUsername(), user);
     }
 
     /**
-     * Implements login functionality and HTTPAuth
-     * @param username 
+     * Implements login functionality and session
+     *
+     * @param username
      * @param password
-     * @return 
+     * @return
      */
     @POST
-    @Path("/signIn/{username}/{password}")
+    @Path("/auth/signIn/{username}/{password}")
     public boolean login(@PathParam("username") String username, @PathParam("password") String password) {
-        if (this.users.signIn(username, password)){
+        if (this.users.signIn(username, password)) {
             HttpSession session = request.getSession(true);
             session.setAttribute("username", username);
             return true;
         }
         return false;
     }
-    
-    @PermitAll
-    @GET
-    @Path("/cabinet")
-    @Produces(MediaType.TEXT_HTML)
-    public String showCabinet(){
-        return "<html> " + "<title>" + "Hello Jersey" + "</title>"
-        + "<body><h1>" + "Hello Jersey" + "</body></h1>" + "</html> ";
-    }
+
 }
