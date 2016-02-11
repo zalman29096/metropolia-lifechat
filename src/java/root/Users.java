@@ -38,7 +38,7 @@ public class Users {
             return false;
         }
     }
-
+    
     public boolean signIn(String username, String password) {
         if (this.users.containsKey(username)) {
             if (this.users.get(username).Password().equals(password)) {
@@ -49,13 +49,13 @@ public class Users {
     }
 
     public ArrayList<User> getUsers(String currentUser) {
-        ArrayList<User> users = new ArrayList<>();
+        ArrayList<User> retval = new ArrayList<>();
         for (User user : this.users.values()) {
             if (!user.getUsername().equals(currentUser)) {
-                users.add(user);
+                retval.add(user);
             }
         }
-        return users;
+        return retval;
     }
 
     public Collection<User> getUsers() {
@@ -64,5 +64,9 @@ public class Users {
 
     public User getUser(String username) {
         return this.users.get(username);
+    }
+    
+    public void addAdmin(){
+        this.addUser("admin", new User("", "", "", "admin"));
     }
 }

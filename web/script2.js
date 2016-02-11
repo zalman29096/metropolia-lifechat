@@ -63,6 +63,7 @@ $(document).ready(function () {
         socket.onopen = function (msg) {
             // Logic for opened connection
             console.log('Connection successfully opened');
+            
             webSocketSend(true, '', '', '', '', username, '');
         };
 
@@ -82,12 +83,14 @@ $(document).ready(function () {
         $(window).unload(function () {
             socket.onclose = function () {
                 // Logic for closed connection
+                socket = new WebSocket(wsUri);
                 console.log('Connection was closed.');
             };
             socket.close();
         });
 
         socket.error = function (err) {
+            socket = new WebSocket(wsUri);
             console.log(err); // Write errors to console
         };
     }

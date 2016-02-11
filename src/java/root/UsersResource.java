@@ -27,7 +27,8 @@ import javax.ws.rs.core.MediaType;
 public class UsersResource {
 
     // public static String username;
-    public boolean statusOfRooms = false;
+    private boolean adminAdded = false;
+    private boolean roomsCreated = false;
     public ChatsCollection chats;
 
     @Context
@@ -85,17 +86,32 @@ public class UsersResource {
      *
      * @param user - XML document from client, representing user object
      * @param password
+     * @param adminUsername
+     * @param adminPassword
      * @return
      */
     @POST
-    @Path("/auth/signUp/{password}")
+    @Path("/auth/signUp/{password}/{adminUsername}/{adminPassword}")
     @Consumes(MediaType.APPLICATION_XML)
-    public boolean addUsers(User user, @PathParam("password") String password) {
-        if (!this.statusOfRooms){
-            this.createRoomChats(5);
+    public String addUsers(User user, @PathParam("password") String password, @PathParam("adminUsername") String adminUsername, @PathParam("adminPassword") String adminPassword) {
+        String retval = "";
+        if (!this.adminAdded) {
+            this.users.addAdmin();
         }
-        user.Password(password);
-        return this.users.addUser(user.getUsername(), user);
+        if (this.login(adminUsername, adminPassword)) {
+            if (!this.roomsCreated) {
+                this.createRoomChats(5);
+            }
+            user.Password(password);
+            if (this.users.addUser(user.getUsername(), user)) {
+                return "true";
+            } else {
+                return "same-user";
+            }
+        } else {
+
+        }
+        return retval;
     }
 
     /**
@@ -109,8 +125,12 @@ public class UsersResource {
     @Path("/auth/signIn/{username}/{password}")
     public boolean login(@PathParam("username") String username, @PathParam("password") String password) {
         if (this.users.signIn(username, password)) {
-            HttpSession session = request.getSession(true);
-            session.setAttribute("username", username);
+            if (username.equals("admin")) {
+                return true;
+            } else {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("username", username);
+            }
             //this.username = username;
             return true;
         }
@@ -121,6 +141,6 @@ public class UsersResource {
         for (int i = 0; i < amount; i++) {
             this.chats.addRoomChat(i);
         }
-        this.statusOfRooms = true;
+        this.roomsCreated = true;
     }
 }

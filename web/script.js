@@ -24,27 +24,39 @@ $(document).ready(function () {
 
     $("#signup-form").submit(function (e) {
         e.preventDefault();
-        var x2js = new X2JS();
-        var form = $(this).serializeJSON();
-        console.log(form);
-        var xmlDoc = x2js.json2xml(form);
-        var url = "/Project/rest/users/auth/signUp/" + $("#password").val();
-        $.ajax({
-            type: 'POST',
-            url: url,
-            contentType: 'application/xml',
-            processData: false,
-            data: xmlDoc,
-            success: function (data) {
-                if (data === "true") {
-                    $(".login-box").show();
-                    $(".register-box").hide();
-                    $("#user-registered").hide();
-                } else {
-                    $("#user-registered").show();
+        if ($("#password").val() !== $("#password2").val()) {
+            $("#passwords-match").show();
+            $("#user-registered").hide();
+            $("#admin-denied").hide();
+        } else {
+            $("#passwords-match").hide();
+            var x2js = new X2JS();
+            var form = $(this).serializeJSON();
+            console.log(form);
+            var xmlDoc = x2js.json2xml(form);
+            var url = "/Project/rest/users/auth/signUp/" + $("#password").val() + "/" + $("#adminUsername").val() + "/" + $("#adminPassword").val();
+            $.ajax({
+                type: 'POST',
+                url: url,
+                contentType: 'application/xml',
+                processData: false,
+                data: xmlDoc,
+                success: function (data) {
+                    if (data === "true") {
+                        $(".login-box").show();
+                        $(".register-box").hide();
+                        $("#user-registered").hide();
+                        $("#admin-denied").hide();
+                    } else if (data === "same-user") {
+                        $("#user-registered").show();
+                        $("#admin-denied").hide();
+                    } else {
+                        $("#user-registered").hide();
+                        $("#admin-denied").show();
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 
     $("#login-form").submit(function (e) {
