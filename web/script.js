@@ -18,8 +18,11 @@ $(document).ready(function () {
     });
 
     $("#login-show").click(function () {
+        $("#user-registered").hide();
+        $("#admin-denied").hide();
         $(".login-box").show();
         $(".register-box").hide();
+        $("#passwords-match").hide();
     });
 
     $("#signup-form").submit(function (e) {

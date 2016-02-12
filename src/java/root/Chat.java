@@ -5,6 +5,7 @@
  */
 package root;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -15,5 +16,6 @@ public interface Chat {
     public boolean hasUser(String username);
     public void addUser(String username);
     public void addMessage(String username, String message, String timestamp);
-    public HashMap<String, HistoryEntry> getHistory();
+    public ArrayList<HistoryEntry> getHistory();
+    public ArrayList<String> getUsers();
 }

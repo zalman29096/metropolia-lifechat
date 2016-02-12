@@ -7,7 +7,9 @@ package root;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -15,10 +17,10 @@ import java.util.HashMap;
  */
 public class Users {
 
-    private final HashMap<String, User> users;
+    private final Map<String, User> users;
 
     private Users() {
-        this.users = new HashMap();
+        this.users = Collections.synchronizedMap(new HashMap<String, User>());
     }
 
     public static Users getInstance() {

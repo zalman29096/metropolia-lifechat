@@ -23,12 +23,9 @@ import javax.ws.rs.core.MediaType;
  * @author kirak
  */
 @Path("/users")
-@Singleton
 public class UsersResource {
 
     // public static String username;
-    private boolean adminAdded = false;
-    private boolean roomsCreated = false;
     public ChatsCollection chats;
 
     @Context
@@ -94,13 +91,19 @@ public class UsersResource {
     @Path("/auth/signUp/{password}/{adminUsername}/{adminPassword}")
     @Consumes(MediaType.APPLICATION_XML)
     public String addUsers(User user, @PathParam("password") String password, @PathParam("adminUsername") String adminUsername, @PathParam("adminPassword") String adminPassword) {
-        String retval = "";
-        if (!this.adminAdded) {
+        if (!Status.getInstance().isAdminAdded()) {
             this.users.addAdmin();
+            Status.getInstance().setAdminAdded();
         }
-        if (this.login(adminUsername, adminPassword)) {
-            if (!this.roomsCreated) {
+        if (this.adminSignIn(adminUsername, adminPassword)) {
+            if (!Status.getInstance().isRoomsCreated()) {
                 this.createRoomChats(5);
+            }
+            if (!Status.getInstance().isGlobalCreated()) {
+                this.createGlobalChats();
+            }
+            if (user.getRole().equals("orderly")) {
+                user.setRooms(new ArrayList<>());
             }
             user.Password(password);
             if (this.users.addUser(user.getUsername(), user)) {
@@ -108,10 +111,8 @@ public class UsersResource {
             } else {
                 return "same-user";
             }
-        } else {
-
         }
-        return retval;
+        return "";
     }
 
     /**
@@ -124,13 +125,13 @@ public class UsersResource {
     @POST
     @Path("/auth/signIn/{username}/{password}")
     public boolean login(@PathParam("username") String username, @PathParam("password") String password) {
+        this.checkOldSession();
+        if (username.equals("admin")) {
+            return false;
+        }
         if (this.users.signIn(username, password)) {
-            if (username.equals("admin")) {
-                return true;
-            } else {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("username", username);
-            }
+            HttpSession session = request.getSession(true);
+            session.setAttribute("username", username);
             //this.username = username;
             return true;
         }
@@ -141,6 +142,24 @@ public class UsersResource {
         for (int i = 0; i < amount; i++) {
             this.chats.addRoomChat(i);
         }
-        this.roomsCreated = true;
+        Status.getInstance().setRoomsCreated();
     }
+
+    private void createGlobalChats() {
+        this.chats.addGlobalChat("doctor");
+        this.chats.addGlobalChat("nurse");
+        Status.getInstance().setGlobalCreated();
+    }
+
+    private boolean adminSignIn(String username, String password) {
+        return this.users.signIn(username, password);
+    }
+    
+    private void checkOldSession(){
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+    }
+    
 }

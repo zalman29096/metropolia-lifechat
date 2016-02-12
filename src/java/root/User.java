@@ -32,7 +32,6 @@ public class User {
         this.role = role;
         this.password = password;
         this.rooms = new ArrayList<>();
-
     }
 
     public String Password() {

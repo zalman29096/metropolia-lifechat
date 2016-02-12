@@ -10,10 +10,13 @@ package root;
  * @author kirak
  */
 class HistoryEntry {
-    private String message;
-    private String timestamp;
 
-    public HistoryEntry(String message, String timestamp) {
+    private final String message;
+    private final String timestamp;
+    private final String username;
+
+    public HistoryEntry(String username, String message, String timestamp) {
+        this.username = username;
         this.message = message;
         this.timestamp = timestamp;
     }
@@ -26,30 +29,15 @@ class HistoryEntry {
     }
 
     /**
-     * @param message the message to set
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
      * @return the timestamp
      */
     public String getTimestamp() {
         return timestamp;
     }
 
-    /**
-     * @param timestamp the timestamp to set
-     */
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
     @Override
     public String toString() {
-        return this.message + " : " + this.timestamp;
+        return this.username + " : " + this.message + " : " + this.timestamp;
     }
-    
-    
+
 }

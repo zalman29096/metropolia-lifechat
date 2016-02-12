@@ -1,29 +1,28 @@
-package root;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package root;
+
+import java.util.ArrayList;
+
 /**
  *
  * @author kirak
  */
-public class RoomChat implements Chat {
+public class GlobalChat implements Chat {
 
-    private final int roomNumber;
+    private final String role;
     private final ArrayList<HistoryEntry> history;
     private final ArrayList<String> users;
     private final int chatId;
 
-    public RoomChat(int roomNumber, int id) {
-        this.users = new ArrayList<>();
-        this.roomNumber = roomNumber;
+    public GlobalChat(String role, int chatId) {
+        this.role = role;
         this.history = new ArrayList<>();
-        this.chatId = id;
+        this.users = new ArrayList<>();
+        this.chatId = chatId;
     }
 
     @Override
@@ -34,13 +33,9 @@ public class RoomChat implements Chat {
     @Override
     public void addUser(String username) {
         if (!this.hasUser(username)) {
-            ArrayList<String> rooms = Users.getInstance().getUser(username).getRooms();
-            if (rooms != null) {
-                if (rooms.contains(this.roomNumber)) {
-                    this.users.add(username);
-                }
+            if (Users.getInstance().getUser(username).getRole().equals(this.role)) {
+                this.users.add(username);
             }
-
         }
     }
 
@@ -55,12 +50,7 @@ public class RoomChat implements Chat {
     public ArrayList<HistoryEntry> getHistory() {
         return this.history;
     }
-
-    public int getRoomNumber() {
-        return roomNumber;
-    }
-
-    @Override
+@Override
     public ArrayList<String> getUsers() {
         return this.users;
     }
