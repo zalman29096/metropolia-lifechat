@@ -128,6 +128,26 @@ $(document).ready(function () {
             }
         });
     });
+    
+    $("#getGlobalChat").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/chats/global',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+    
+    $("#getRoomChats").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/chats/rooms',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
 
     $("#getUsers").click(function (event) {
         $.ajax({

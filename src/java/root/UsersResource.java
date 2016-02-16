@@ -6,7 +6,6 @@
 package root;
 
 import java.util.ArrayList;
-import javax.ejb.Singleton;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -26,16 +25,17 @@ import javax.ws.rs.core.MediaType;
 public class UsersResource {
 
     // public static String username;
-    public ChatsCollection chats;
-
     @Context
     private HttpServletRequest request;
 
+    private ChatsResource chatsResource;
+    private final ChatsCollection chats;
     private final Users users;
 
     public UsersResource() {
         this.users = Users.getInstance();
         this.chats = ChatsCollection.getInstance();
+        this.chatsResource = new ChatsResource();
     }
 
     @GET
@@ -95,18 +95,21 @@ public class UsersResource {
             this.users.addAdmin();
             Status.getInstance().setAdminAdded();
         }
+
         if (this.adminSignIn(adminUsername, adminPassword)) {
             if (!Status.getInstance().isRoomsCreated()) {
-                this.createRoomChats(5);
+                this.chatsResource.createRoomChats(5);
             }
             if (!Status.getInstance().isGlobalCreated()) {
-                this.createGlobalChats();
+                this.chatsResource.createGlobalChats();
             }
             if (user.getRole().equals("orderly")) {
                 user.setRooms(new ArrayList<>());
-            }
+            } 
             user.Password(password);
             if (this.users.addUser(user.getUsername(), user)) {
+                this.chatsResource.addUserToGlobalChat(user.getRole(), user.getUsername());
+                this.chatsResource.addUserToRoomChat(user.getRooms(), user.getUsername());
                 return "true";
             } else {
                 return "same-user";
@@ -138,28 +141,15 @@ public class UsersResource {
         return false;
     }
 
-    private void createRoomChats(int amount) {
-        for (int i = 0; i < amount; i++) {
-            this.chats.addRoomChat(i);
-        }
-        Status.getInstance().setRoomsCreated();
-    }
-
-    private void createGlobalChats() {
-        this.chats.addGlobalChat("doctor");
-        this.chats.addGlobalChat("nurse");
-        Status.getInstance().setGlobalCreated();
-    }
-
     private boolean adminSignIn(String username, String password) {
         return this.users.signIn(username, password);
     }
-    
-    private void checkOldSession(){
+
+    private void checkOldSession() {
         HttpSession oldSession = request.getSession(false);
         if (oldSession != null) {
             oldSession.invalidate();
         }
     }
-    
+
 }

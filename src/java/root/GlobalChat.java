@@ -5,53 +5,44 @@
  */
 package root;
 
-import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  *
  * @author kirak
  */
-public class GlobalChat implements Chat {
+@XmlRootElement
+public class GlobalChat extends Chat {
 
+    
     private final String role;
-    private final ArrayList<HistoryEntry> history;
-    private final ArrayList<String> users;
-    private final int chatId;
 
-    public GlobalChat(String role, int chatId) {
-        this.role = role;
-        this.history = new ArrayList<>();
-        this.users = new ArrayList<>();
-        this.chatId = chatId;
+    public GlobalChat() {
+        this.role = null;
     }
-
-    @Override
-    public boolean hasUser(String username) {
-        return this.users.contains(username);
+    
+    public GlobalChat(String role, int chatId) {
+        super(chatId);
+        this.role = role;
     }
 
     @Override
     public void addUser(String username) {
         if (!this.hasUser(username)) {
             if (Users.getInstance().getUser(username).getRole().equals(this.role)) {
-                this.users.add(username);
+                super.addUser(username);
             }
         }
     }
 
-    @Override
-    public void addMessage(String username, String message, String timestamp) {
-        if (this.hasUser(username)) {
-            this.history.add(new HistoryEntry(username, message, timestamp));
-        }
+    @XmlElement
+    public String getRole() {
+        return role;
     }
 
-    @Override
-    public ArrayList<HistoryEntry> getHistory() {
-        return this.history;
-    }
-@Override
-    public ArrayList<String> getUsers() {
-        return this.users;
-    }
+    
 }

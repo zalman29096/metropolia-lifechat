@@ -1,34 +1,30 @@
-package root;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package root;
+
+import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author kirak
  */
-public class RoomChat implements Chat {
+@XmlRootElement
+public class RoomChat extends Chat {
 
-    private final int roomNumber;
-    private final ArrayList<HistoryEntry> history;
-    private final ArrayList<String> users;
-    private final int chatId;
+    private String roomNumber;
 
-    public RoomChat(int roomNumber, int id) {
-        this.users = new ArrayList<>();
-        this.roomNumber = roomNumber;
-        this.history = new ArrayList<>();
-        this.chatId = id;
+    public RoomChat() {
+        this.roomNumber = null;
     }
-
-    @Override
-    public boolean hasUser(String username) {
-        return this.users.contains(username);
+    
+    public RoomChat(String roomNumber, int chatId) {
+        super(chatId);
+        this.roomNumber = roomNumber;
     }
 
     @Override
@@ -37,31 +33,16 @@ public class RoomChat implements Chat {
             ArrayList<String> rooms = Users.getInstance().getUser(username).getRooms();
             if (rooms != null) {
                 if (rooms.contains(this.roomNumber)) {
-                    this.users.add(username);
+                    super.addUser(username);
                 }
             }
 
         }
     }
 
-    @Override
-    public void addMessage(String username, String message, String timestamp) {
-        if (this.hasUser(username)) {
-            this.history.add(new HistoryEntry(username, message, timestamp));
-        }
-    }
-
-    @Override
-    public ArrayList<HistoryEntry> getHistory() {
-        return this.history;
-    }
-
-    public int getRoomNumber() {
+    @XmlElement
+    public String getRoomNumber() {
         return roomNumber;
     }
 
-    @Override
-    public ArrayList<String> getUsers() {
-        return this.users;
-    }
 }

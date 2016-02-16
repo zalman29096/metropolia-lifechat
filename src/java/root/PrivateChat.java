@@ -11,18 +11,15 @@ import java.util.ArrayList;
  *
  * @author kirak
  */
-public class PrivateChat implements Chat {
+public class PrivateChat extends Chat{
 
-    private final ArrayList<HistoryEntry> history;
     private final String username1;
     private final String username2;
-    private final int chatId;
 
     public PrivateChat(String username1, String username2, int chatId) {
-        this.history = new ArrayList<>();
+        super(chatId);
         this.username1 = username1;
         this.username2 = username2;
-        this.chatId = chatId;
     }
 
     @Override
@@ -32,18 +29,6 @@ public class PrivateChat implements Chat {
 
     @Override
     public void addUser(String username) {
-    }
-
-    @Override
-    public void addMessage(String username, String message, String timestamp) {
-        if (this.hasUser(username)) {
-            this.history.add(new HistoryEntry(username, message, timestamp));
-        }
-    }
-
-    @Override
-    public ArrayList<HistoryEntry> getHistory() {
-        return this.history;
     }
 
     @Override

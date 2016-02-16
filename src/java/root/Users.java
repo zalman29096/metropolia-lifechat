@@ -53,7 +53,7 @@ public class Users {
     public ArrayList<User> getUsers(String currentUser) {
         ArrayList<User> retval = new ArrayList<>();
         for (User user : this.users.values()) {
-            if (!user.getUsername().equals(currentUser)) {
+            if (!user.getUsername().equals(currentUser) && !user.getUsername().equals("admin")) {
                 retval.add(user);
             }
         }
@@ -69,6 +69,8 @@ public class Users {
     }
     
     public void addAdmin(){
-        this.addUser("admin", new User("", "", "", "admin"));
+        User admin = new User("", "", "", "admin");
+        admin.setUsername("admin");
+        this.addUser("admin", admin);
     }
 }

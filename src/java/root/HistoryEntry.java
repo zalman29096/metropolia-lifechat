@@ -5,11 +5,15 @@
  */
 package root;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author kirak
  */
-class HistoryEntry {
+@XmlRootElement
+public class HistoryEntry {
 
     private final String message;
     private final String timestamp;
@@ -24,13 +28,20 @@ class HistoryEntry {
     /**
      * @return the message
      */
+    @XmlElement
     public String getMessage() {
         return message;
+    }
+
+    @XmlElement
+    public String getUsername() {
+        return username;
     }
 
     /**
      * @return the timestamp
      */
+    @XmlElement
     public String getTimestamp() {
         return timestamp;
     }

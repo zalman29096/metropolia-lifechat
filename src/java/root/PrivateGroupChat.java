@@ -5,27 +5,14 @@
  */
 package root;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author kirak
  */
-public class PrivateGroupChat implements Chat {
-
-    private final ArrayList<HistoryEntry> history;
-    private final ArrayList<String> users;
-    private final int chatId;
+public class PrivateGroupChat extends Chat {
 
     public PrivateGroupChat(int chatId) {
-        this.history = new ArrayList<>();
-        this.users = new ArrayList<>();
-        this.chatId = chatId;
-    }
-
-    @Override
-    public boolean hasUser(String username) {
-        return this.users.contains(username);
+        super(chatId);
     }
 
     @Override
@@ -35,21 +22,9 @@ public class PrivateGroupChat implements Chat {
         }
     }
 
-    @Override
-    public void addMessage(String username, String message, String timestamp) {
+    public void removeUser(String username){
         if (this.hasUser(username)) {
-            this.history.add(new HistoryEntry(username, message, timestamp));
+            this.users.remove(username);
         }
     }
-
-    @Override
-    public ArrayList<HistoryEntry> getHistory() {
-        return this.history;
-    }
-
-    @Override
-    public ArrayList<String> getUsers() {
-        return this.users;
-    }
-
 }
