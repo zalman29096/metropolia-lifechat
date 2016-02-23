@@ -5,6 +5,7 @@
  */
 package root;
 
+import java.math.BigDecimal;
 import javax.json.Json;
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
@@ -14,9 +15,9 @@ import javax.websocket.EndpointConfig;
  *
  * @author kirak
  */
-public class ChatMessageEncoder implements Encoder.Text<ChatMessage> {
+public class ChatMessageEncoder implements Encoder.Text<HistoryEntry> {
 
-    @Override
+    /*@Override
     public String encode(ChatMessage message) throws EncodeException {
         return Json.createObjectBuilder().add("flag", message.isFlag())
                 .add("chat", message.getChat())
@@ -26,7 +27,7 @@ public class ChatMessageEncoder implements Encoder.Text<ChatMessage> {
                 .add("username", message.getUsername())
                 .add("message", message.getMessage())
                 .build().toString();
-    }
+    }*/
 
     @Override
     public void init(EndpointConfig config) {
@@ -34,6 +35,16 @@ public class ChatMessageEncoder implements Encoder.Text<ChatMessage> {
 
     @Override
     public void destroy() {
+    }
+
+    @Override
+    public String encode(HistoryEntry object) throws EncodeException {
+        return Json.createObjectBuilder().add("chatId", object.getChatId())
+                .add("flag", object.getFlag())
+                .add("username", object.getUsername())
+                .add("timestamp", object.getTimestamp())
+                .add("message", object.getMessage())
+                .build().toString();
     }
 
 }

@@ -10,99 +10,34 @@ package root;
  * @author kirak
  */
 public class ChatMessage {
-    private boolean flag; //true:system message; false:notSystem message
+    /*private boolean flag; //true:system message; false:notSystem message
     private String chat;
     private String room;
     private String role;
     private String username;
     private String usernameTo;
+    private String message;*/
+    
+    private int chatId;
     private String message;
+    private String description;
+    private int flag; //0-simple message; 1-emergency message; 2-newAssignment 
 
     public ChatMessage() {
     }
 
     /**
-     * @return the flag
+     * @return the chatId
      */
-    public boolean isFlag() {
-        return flag;
+    public int getChatId() {
+        return chatId;
     }
 
     /**
-     * @param flag the flag to set
+     * @param chatId the chatId to set
      */
-    public void setFlag(boolean flag) {
-        this.flag = flag;
-    }
-
-    /**
-     * @return the chat
-     */
-    public String getChat() {
-        return chat;
-    }
-
-    /**
-     * @param chat the chat to set
-     */
-    public void setChat(String chat) {
-        this.chat = chat;
-    }
-
-    /**
-     * @return the room
-     */
-    public String getRoom() {
-        return room;
-    }
-
-    /**
-     * @param room the room to set
-     */
-    public void setRoom(String room) {
-        this.room = room;
-    }
-
-    /**
-     * @return the role
-     */
-    public String getRole() {
-        return role;
-    }
-
-    /**
-     * @param role the role to set
-     */
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    /**
-     * @return the username
-     */
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * @param username the username to set
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * @return the usernameTo
-     */
-    public String getUsernameTo() {
-        return usernameTo;
-    }
-
-    /**
-     * @param usernameTo the usernameTo to set
-     */
-    public void setUsernameTo(String usernameTo) {
-        this.usernameTo = usernameTo;
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
     }
 
     /**
@@ -118,6 +53,35 @@ public class ChatMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    /**
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the flag
+     */
+    public int getFlag() {
+        return flag;
+    }
+
+    /**
+     * @param flag the flag to set
+     */
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
     
     
 }

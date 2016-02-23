@@ -29,12 +29,12 @@ public class UsersResource {
     private HttpServletRequest request;
 
     private ChatsResource chatsResource;
-    private final ChatsCollection chats;
+    //private final ChatsCollection chats;
     private final Users users;
 
     public UsersResource() {
         this.users = Users.getInstance();
-        this.chats = ChatsCollection.getInstance();
+        //this.chats = ChatsCollection.getInstance();
         this.chatsResource = new ChatsResource();
     }
 

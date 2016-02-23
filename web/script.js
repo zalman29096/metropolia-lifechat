@@ -5,6 +5,16 @@
  */
 $(document).ready(function () {
 
+    $.ajax({
+        type: 'GET',
+        url: '/Project/rest/users/auth',
+        success: function (data) {
+            if (data !== undefined) {
+                window.location.replace("cabinet.html");
+            }
+        }
+    });
+
     $("#role").change(function () {
         if ($(this).val() === "orderly")
             $("#rooms-select").hide();

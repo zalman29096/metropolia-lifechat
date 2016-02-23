@@ -7,10 +7,9 @@ package root;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -18,14 +17,14 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author kirak
  */
-
 @XmlTransient
-@XmlSeeAlso({GlobalChat.class, RoomChat.class})
+@XmlSeeAlso({GlobalChat.class, RoomChat.class, PrivateChat.class})
 public abstract class Chat {
 
     private ArrayList<HistoryEntry> history;
     private ArrayList<String> users;
     private int chatId;
+    private HashMap<String, Integer> newMessages;
 
     public Chat() {
     }
@@ -33,6 +32,7 @@ public abstract class Chat {
     public Chat(int chatId) {
         this.history = new ArrayList<>();
         this.users = new ArrayList<>();
+        this.newMessages = new HashMap<>();
         this.chatId = chatId;
     }
 
@@ -40,32 +40,53 @@ public abstract class Chat {
         return this.users.contains(username);
     }
 
-    public void addMessage(String username, String message) {
+    public HistoryEntry addMessage(String username, String message, int flag) {
+        HistoryEntry retval = null;
         if (this.hasUser(username)) {
             String timestamp = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
-            this.history.add(new HistoryEntry(username, message, timestamp));
+            retval = new HistoryEntry(this.chatId, username, message, timestamp, flag);
+            this.history.add(retval);
+            for (String user : this.newMessages.keySet()) {
+                if (!user.equals(username)) {
+                    int count = this.newMessages.get(user);
+                    System.out.println("User:" + user + "countBefore:" + this.newMessages.get(user));
+                    this.newMessages.replace(user, count + 1);
+                    System.out.println("User:" + user + "countAfter:" + this.newMessages.get(user));
+                }
+            }
         }
+        return retval;
     }
 
     public ArrayList<HistoryEntry> getHistory(String username) {
         if (!this.hasUser(username)) {
             return null;
         }
+        this.newMessages.replace(username, 0);
         return this.history;
     }
 
-    public void addUser(String username){
-        this.users.add(username);
+    public void addUser(String username) {
+        if (!this.hasUser(username)) {
+            this.users.add(username);
+        }
+        if (!this.newMessages.containsKey(username)) {
+            this.newMessages.put(username, 0);
+        }
     }
 
     @XmlElement
-    public Collection<String> getUsers() {
+    public ArrayList<String> getUsers() {
         return this.users;
     }
 
     @XmlElement
     public int getChatId() {
         return chatId;
+    }
+
+    public int getNewMessagesCount(String username) {
+        return this.newMessages.get(username);
     }
 
     /**
@@ -81,6 +102,5 @@ public abstract class Chat {
     public void setChatId(int chatId) {
         this.chatId = chatId;
     }
-
 
 }

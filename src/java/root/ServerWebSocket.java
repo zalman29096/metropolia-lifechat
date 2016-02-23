@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.websocket.EncodeException;
+import javax.websocket.EndpointConfig;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -21,16 +22,48 @@ import javax.websocket.server.ServerEndpoint;
  *
  * @author kirak
  */
-@ServerEndpoint(value = "/endpoint", encoders = {ChatMessageEncoder.class}, decoders = {ChatMessageDecoder.class})
+@ServerEndpoint(value = "/endpoint", encoders = {ChatMessageEncoder.class}, decoders = {ChatMessageDecoder.class}, configurator = ServletAwareConfig.class)
 public class ServerWebSocket {
 
     private static final Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
 
     @OnOpen
-    public void onOpen(Session peer) {
+    public void onOpen(Session peer, EndpointConfig config) {
+        peer.getUserProperties().put("username", config.getUserProperties().get("username"));
         peers.add(peer);
-        /*peer.getUserProperties().put(key, peer)
-        System.out.println(UsersResource.username);*/
+    }
+
+    @OnMessage
+    public void onMessage(ChatMessage message, Session userSession) throws IOException, EncodeException {
+        String username = (String) userSession.getUserProperties().get("username");
+        HistoryEntry retval = ChatsCollection.getInstance().addMessage(message.getChatId(), username, message.getMessage(), message.getFlag(), message.getDescription());
+        this.sendMessage(ChatsCollection.getInstance().getUsers(message.getChatId()), retval);
+        System.out.println("testing");
+        System.out.println(retval);
+        System.out.println(message.getChatId());
+    }
+
+    @OnClose
+    public void onClose(Session peer) {
+        peers.remove(peer);
+    }
+
+    public void sendMessage(Collection<String> users, HistoryEntry message) throws IOException, EncodeException {
+        for (String username : users) {
+            for (Session peer : peers) {
+                if (peer.getUserProperties().get("username").equals(username)) {
+                    peer.getBasicRemote().sendObject(message);
+                }
+            }
+        }
+
+    }
+    /*private static final Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
+
+    @OnOpen
+    public void onOpen(Session peer, EndpointConfig config) {
+        peer.getUserProperties().put("username", config.getUserProperties().get("username"));
+        peers.add(peer);
     }
 
     @OnMessage
@@ -79,5 +112,5 @@ public class ServerWebSocket {
                 peer.getBasicRemote().sendObject(message);
             }
         }
-    }
+    }*/
 }

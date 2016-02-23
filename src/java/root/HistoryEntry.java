@@ -15,14 +15,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class HistoryEntry {
 
-    private final String message;
-    private final String timestamp;
-    private final String username;
+    private int chatId;
+    private int flag;
+    private String message;
+    private String timestamp;
+    private String username;
 
-    public HistoryEntry(String username, String message, String timestamp) {
+    public HistoryEntry() {
+    }
+
+    public HistoryEntry(int chatId, String username, String message, String timestamp, int flag) {
         this.username = username;
         this.message = message;
         this.timestamp = timestamp;
+        this.flag = flag;
+        this.chatId = chatId;
     }
 
     /**
@@ -51,4 +58,15 @@ public class HistoryEntry {
         return this.username + " : " + this.message + " : " + this.timestamp;
     }
 
+    @XmlElement
+    public int getFlag() {
+        return flag;
+    }
+
+    @XmlElement
+    public int getChatId() {
+        return chatId;
+    }
+
+    
 }

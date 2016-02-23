@@ -22,13 +22,9 @@ public class ChatMessageDecoder implements Decoder.Text<ChatMessage>{
     public ChatMessage decode(String message) throws DecodeException {
         ChatMessage chatMessage = new ChatMessage();
         JsonObject json = Json.createReader(new StringReader(message)).readObject();
-        chatMessage.setFlag(json.getBoolean("flag"));
-        chatMessage.setChat(json.getString("chat"));
-        chatMessage.setRoom(json.getString("room"));
-        chatMessage.setRole(json.getString("role"));
-        chatMessage.setUsernameTo(json.getString("usernameTo"));
-        chatMessage.setUsername(json.getString("username"));
+        chatMessage.setFlag(json.getInt("flag"));
         chatMessage.setMessage(json.getString("message"));
+        chatMessage.setChatId(json.getInt("chatId"));
         return chatMessage;
     }
 

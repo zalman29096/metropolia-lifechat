@@ -40,7 +40,7 @@ public class Users {
             return false;
         }
     }
-    
+
     public boolean signIn(String username, String password) {
         if (this.users.containsKey(username)) {
             if (this.users.get(username).Password().equals(password)) {
@@ -60,6 +60,25 @@ public class Users {
         return retval;
     }
 
+    public ArrayList<String> getOrderlies() {
+        ArrayList<String> retval = new ArrayList<>();
+        Collection<User> users = Users.getInstance().getUsers();
+        for (User user : users) {
+            if (user.getRole().equals("orderly")) {
+                retval.add(user.getUsername());
+            }
+        }
+        return retval;
+    }
+
+    public boolean hasUser(String username) {
+        boolean retval = false;
+        if (this.users.containsKey(username)) {
+            retval = true;
+        }
+        return retval;
+    }
+
     public Collection<User> getUsers() {
         return this.users.values();
     }
@@ -67,8 +86,8 @@ public class Users {
     public User getUser(String username) {
         return this.users.get(username);
     }
-    
-    public void addAdmin(){
+
+    public void addAdmin() {
         User admin = new User("", "", "", "admin");
         admin.setUsername("admin");
         this.addUser("admin", admin);

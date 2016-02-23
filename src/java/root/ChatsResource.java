@@ -5,12 +5,17 @@
  */
 package root;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.websocket.EncodeException;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -23,7 +28,7 @@ import javax.ws.rs.core.MediaType;
  */
 @Path("/chats")
 public class ChatsResource {
-    
+
     @Context
     private HttpServletRequest request;
 
@@ -47,24 +52,68 @@ public class ChatsResource {
         }
         return retval;
     }*/
-    
     @Path("/global")
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public ArrayList<GlobalChat> getRoomsId(){
-        Collection<GlobalChatt> retval = new ArrayList<>();
-        retval.add(new GlobalChat("nurse", 34));
-        retval.add(new GlobalChat("doctor", 65));
-        return retval;
+    public GlobalChat getGlobalChat() {
+        ArrayList<GlobalChat> globalChats = this.chats.getUserChats(this.checkSession(), GlobalChat.class);
+        if (globalChats.size() == 1) {
+            return globalChats.get(0);
+        }
+        return null;
     }
-    
+
     @Path("/rooms")
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public ArrayList<RoomChat> getRooms(){
+    public ArrayList<RoomChat> getRoomChats() {
         return this.chats.getUserChats(this.checkSession(), RoomChat.class);
     }
 
+    @Path("/history/{chatId}")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public ArrayList<HistoryEntry> getHistory(@PathParam("chatId") int chatId) {
+        return this.chats.getChatHistory(chatId, this.checkSession());
+    }
+
+    @Path("/privateChat")
+    @POST
+    public int createPrivateChat() throws IOException, EncodeException {
+        int chatId = this.chats.addPrivateChat();
+        this.chats.addUserToChat(chatId, this.checkSession());
+        return chatId;
+    }
+
+    @Path("/privateChats")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public ArrayList<PrivateChat> getPrivateChats() {
+        return this.chats.getUserChats(this.checkSession(), PrivateChat.class);
+    }
+
+    @Path("/privateChat/{chatId}")
+    @DELETE
+    public boolean leavePrivateChat(@PathParam("chatId") int chatId) {
+        return this.chats.leavePrivateChat(chatId, this.checkSession());
+    }
+
+    @Path("/privateChat/{chatId}/{username}")
+    @PUT
+    public boolean addToPrivateChat(@PathParam("username") String username, @PathParam("chatId") int chatId) {
+        boolean retval = false;
+        if (this.chats.getUsers(chatId).contains(this.checkSession())) {
+            retval = this.chats.addUserToChat(chatId, username);
+        }
+        return retval;
+    }
+
+    @Path("/newMessagesCount/{chatId}")
+    @GET
+    public int get(@PathParam("chatId") int chatId){
+        return this.chats.getNewMessagesCount(chatId, this.checkSession());
+    }
+    
     public void createRoomChats(int amount) {
         for (int i = 0; i < amount; i++) {
             this.chats.addRoomChat(Integer.toString(i));
@@ -80,18 +129,25 @@ public class ChatsResource {
 
     public void addUserToGlobalChat(String role, String username) {
         int chatId = 0;
-        if (role.equals("doctor")) {
-            chatId = this.chats.doctorChatId;
-        } else if (role.equals("nurse")) {
-            chatId = this.chats.nurseChatId;
+        ArrayList<GlobalChat> globalChats = this.chats.getChats(GlobalChat.class);
+        for (GlobalChat globalChat : globalChats) {
+            if (globalChat.getRole().equals(role)) {
+                chatId = globalChat.getChatId();
+            }
         }
-        this.chats.addUsertoChat(chatId, username);
+        System.out.println("addUserMethod");
+        this.chats.addUserToChat(chatId, username);
     }
 
     public void addUserToRoomChat(ArrayList<String> rooms, String username) {
         if (rooms != null) {
-            for (String room : rooms){
-                this.chats.addUsertoChat(this.chats.roomChats.get(room), username);
+            ArrayList<RoomChat> roomChats = this.chats.getChats(RoomChat.class);
+            for (String room : rooms) {
+                for (RoomChat roomChat : roomChats) {
+                    if (roomChat.getRoomNumber().equals(room)) {
+                        this.chats.addUserToChat(roomChat.getChatId(), username);
+                    }
+                }
             }
         }
     }

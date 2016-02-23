@@ -25,6 +25,19 @@ $(document).ready(function () {
         }
     });
 
+    $("#getRoomChats").click(function () {
+        $(".global-chat").hide();
+        $("#roomChats").show();
+        $(".active").removeClass("active");
+        $(this).addClass("active");
+    });
+    $("#getGlobalChat").click(function () {
+        $(".global-chat").show();
+        $("#roomChats").hide();
+        $(".active").removeClass("active");
+        $(this).addClass("active");
+    });
+
     //Get User
     $.ajax({
         type: 'GET',
@@ -46,14 +59,15 @@ $(document).ready(function () {
                     });
                 } else
                     createRoomChats(rooms);
+
             }
         }
     });
 
     function createRoomChats(data) {
-        $("#roomChats").append("room " + data + "<br> <textarea id = 'room" + data + "Messages' readonly = 'readonly' rows = '10' cols = '45'></textarea><br> \n\
-                                        <input type = 'text' placeholder = 'message' id = 'room" + data + "Message' / > \n\
-                                        <button type = 'button' class = 'sendRoomsMessage' id = '" + data + "' > send </button><br>");
+        $("#roomChats").append("<h3>Room " + data + "</h3> <textarea class= 'form-control' id = 'room" + data + "Messages' readonly = 'readonly' rows = '10' cols = '45'></textarea><br> \n\
+                                        <input class= 'form-control' type = 'text' placeholder = 'Message' id = 'room" + data + "Message' / > \n\
+                                        <button style = 'margin : 15px' type = 'button' class = 'btn btn-md btn-success sendRoomsMessage' id = '" + data + "' > Send </button><br>");
     }
 
     function webSocket() {
@@ -63,12 +77,23 @@ $(document).ready(function () {
         socket.onopen = function (msg) {
             // Logic for opened connection
             console.log('Connection successfully opened');
-            
-            webSocketSend(true, '', '', '', '', username, '');
+
+            webSocketSend(5, 0, 'test', '');
         };
 
         socket.onmessage = function (msg) {
             // Handle received data
+            // flag!!!!!!!!!!!!!!!!!!!!!!!!
+            // 0-standard message
+            // 1-emergency message
+            // 2-assignment inside room message
+            // 3-file
+            // 4-new assignment (assignmentId inside chatId)
+            // 5-assignment accepted (assignmentId inside chatId)
+            // 6-assignment done (assignmentId inside chatId)
+            //orderly should only see new assignments and the ones that he has accepted or completed
+            //doctor or nurse should see all assignments that he or she has created(all : new, accpeted, completed)
+            console.log(msg);
             var json = JSON.parse(msg.data);
             if (json.chat === "global") {
                 $("#globalMessages").append(json.username + ':' + json.message + '\n');
@@ -80,32 +105,42 @@ $(document).ready(function () {
 
         };
 
+        socket.onclose = function () {
+            // Logic for closed connection
+            console.log('Connection was closed.');
+            window.location.replace("index.html");
+        };
+
         $(window).unload(function () {
-            socket.onclose = function () {
-                // Logic for closed connection
-                socket = new WebSocket(wsUri);
-                console.log('Connection was closed.');
-            };
             socket.close();
         });
 
         socket.error = function (err) {
-            socket = new WebSocket(wsUri);
-            console.log(err); // Write errors to console
+            console.log(err);
+            window.location.replace("index.html");
+            // Write errors to console
         };
     }
     ;
 
-    function webSocketSend(flag, chat, room, role, usernameTo, username, message) {
-        var json = JSON.stringify({'flag': flag,
-            'chat': chat,
-            'room': room,
-            'role': role,
-            'usernameTo': usernameTo,
-            'username': username,
+    function webSocketSend(chatId, flag, message) {
+        var json = JSON.stringify({'chatId': chatId,
+            'flag': flag,
             'message': message});
         socket.send(json);
     }
+
+
+    /*function webSocketSend(flag, chat, room, role, usernameTo, username, message) {
+     var json = JSON.stringify({'flag': flag,
+     'chat': chat,
+     'room': room,
+     'role': role,
+     'usernameTo': usernameTo,
+     'username': username,
+     'message': message});
+     socket.send(json);
+     }*/
 
     $("#sendGlobalMessage").click(function (event) {
         var message = $("#globalMessage").val();
@@ -128,7 +163,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     $("#getGlobalChat").click(function (event) {
         $.ajax({
             type: 'GET',
@@ -138,13 +173,148 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     $("#getRoomChats").click(function (event) {
         $.ajax({
             type: 'GET',
             url: '/Project/rest/chats/rooms',
             success: function (data) {
                 console.log(data);
+            }
+        });
+    });
+
+    $("#getHistory").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/chats/history/5',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#createPrivateChat").click(function (event) {
+        $.ajax({
+            type: 'POST',
+            url: '/Project/rest/chats/privateChat',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#getPrivateChats").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/chats/privateChats',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#createAssignment").click(function (event) {
+        $.ajax({
+            type: 'POST',
+            url: '/Project/rest/assignments/testtesttest',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#getAssignment").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/assignments/0',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#getAssignments").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/assignments',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#acceptAssignment").click(function (event) {
+        $.ajax({
+            type: 'PUT',
+            url: '/Project/rest/assignments/acceptAssignment/0'
+        });
+    });
+
+    $("#assignmentDone").click(function (event) {
+        $.ajax({
+            type: 'PUT',
+            url: '/Project/rest/assignments/assignmentDone/0'
+        });
+    });
+
+    $("#leavePrivateChat").click(function (event) {
+        $.ajax({
+            type: 'DELETE',
+            url: '/Project/rest/chats/privateChat/7',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#addToChat").click(function (event) {
+        $.ajax({
+            type: 'PUT',
+            url: '/Project/rest/chats/privateChat/8/1234',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+    
+    $("#newMessages").click(function (event) {
+        $.ajax({
+            type: 'GET',
+            url: '/Project/rest/chats/newMessagesCount/5',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    });
+
+    $("#uploadFile").click(function (event) {
+        var file = $('input[name="file"').get(0).files[0];
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: '/Project/rest/file/upload', //Server script to process data
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            dataType: false,
+            processData: false,
+            success: function (data, status) {
+                console.log(data);
+                console.log(status);
+                //$("#imgTest").append("<img src='images/" + data +"'>");
+                if (status === "success"){
+                    //$("#imgTest").append("<a href='files/" + data +"' target='_blank' download>Download</a>");
+                    webSocketSend(chatId, 4, data);
+                }
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(textStatus);
+
             }
         });
     });
