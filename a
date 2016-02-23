@@ -1,0 +1,115 @@
+[33mcommit f723a6fd16b4f75b963ebf01ce658528d32947f1[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 23 16:14:19 2016 +0200
+
+    backend is ready(saving to files not)
+
+[33mcommit 0d13e43d1ad9c2ab5bf65d93c10de335d669c976[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 23 16:13:44 2016 +0200
+
+    backend is ready(saving to files not)
+
+[33mcommit a100dac7058fc195eda07977ecdcb8208a71740d[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 23 16:09:25 2016 +0200
+
+    Backend is ready(saving to files not)
+
+[33mcommit 3893e5ee154aa48573141189284a8619b38b2309[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 16 10:49:08 2016 +0200
+
+    For Darlington to test
+
+[33mcommit b363ffc61e02220c88b41cda02eaecc3de2ab62a[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 16 10:42:49 2016 +0200
+
+    For testing
+
+[33mcommit 47cb8f4a0de1a86d9b7ec2315aa540d1e9d0960c[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Fri Feb 12 09:57:43 2016 +0200
+
+    chat classes added and chatsCollection
+
+[33mcommit afe4f924b1e73b3c73905fb951d0fc9f7922c3cc[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Thu Feb 11 10:36:15 2016 +0200
+
+    admin functionality
+
+[33mcommit 62b70c922de9a7fa0e91c7b8b4acb46c6849d227[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 9 17:23:47 2016 +0200
+
+    ChatCollection class, roomChat class etc
+
+[33mcommit 64c4fbf83ce646cd7b0d9726be9177bfacc883a2[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 9 12:13:08 2016 +0200
+
+    Global and rooms chats stupid
+
+[33mcommit 714a70ddeca33a358303c989545ca0e3342f92ce[m
+Author: Aleksey Lebedev <zalman29096@gmail.com>
+Date:   Wed Feb 3 10:38:38 2016 +0200
+
+    Nice login/sigup design, Documentation
+
+[33mcommit e5d57f52603e55429e9892d6dcbb52adf5aa5384[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Tue Feb 2 23:11:02 2016 +0200
+
+    Login functionality
+
+[33mcommit 2fe26bb4136a1dfc96c85b9b60900489820d4689[m
+Author: Darlington OMOIFO PC <Darlington OMOIFO PC>
+Date:   Mon Jan 25 14:43:39 2016 +0200
+
+    From Darlington
+
+[33mcommit f9e6cd5a7803f1c2f396d6996345a738758bdda9[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Mon Jan 25 13:33:18 2016 +0200
+
+    smth
+
+[33mcommit d536edba685e10dcca1401a44b6402655d07f028[m
+Merge: d955e55 f0725b8
+Author: Aleksey Lebedev <zalman29096@gmail.com>
+Date:   Mon Jan 25 13:32:22 2016 +0200
+
+    uou
+
+[33mcommit d955e55ba4ba409e5c0f175d12cab8c6ded45110[m
+Author: Aleksey Lebedev <zalman29096@gmail.com>
+Date:   Mon Jan 25 13:31:56 2016 +0200
+
+    uou
+
+[33mcommit f0725b898d79335e9821618adb14fb5c80d4c0b4[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Mon Jan 25 13:30:33 2016 +0200
+
+    shit
+
+[33mcommit 76d0db933bcde23b5fe33d3784e812355213d94a[m
+Merge: dedcf83 81009f2
+Author: Kirill K <Kirak@gmail.com>
+Date:   Mon Jan 25 13:28:08 2016 +0200
+
+    Merge branch 'master' of https://github.com/zalman29096/metropolia-lifechat
+
+[33mcommit dedcf83ee3f3d1cd6109c0621b05e4bf707d4965[m
+Author: Kirill K <Kirak@gmail.com>
+Date:   Mon Jan 25 13:26:21 2016 +0200
+
+    Commit from Kira
+
+[33mcommit 81009f20b9b023abfc24f54d84882ce65310298c[m
+Author: Aleksey Lebedev <zalman29096@gmail.com>
+Date:   Mon Jan 25 13:16:20 2016 +0200
+
+    Initial commit
