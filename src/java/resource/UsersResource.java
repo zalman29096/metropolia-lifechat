@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package resource;
 
+import collections.UsersCollection;
+import models.User;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -30,10 +32,10 @@ public class UsersResource {
 
     private ChatsResource chatsResource;
     //private final ChatsCollection chats;
-    private final Users users;
+    private final UsersCollection users;
 
     public UsersResource() {
-        this.users = Users.getInstance();
+        this.users = UsersCollection.getInstance();
         //this.chats = ChatsCollection.getInstance();
         this.chatsResource = new ChatsResource();
     }
@@ -91,18 +93,18 @@ public class UsersResource {
     @Path("/auth/signUp/{password}/{adminUsername}/{adminPassword}")
     @Consumes(MediaType.APPLICATION_XML)
     public String addUsers(User user, @PathParam("password") String password, @PathParam("adminUsername") String adminUsername, @PathParam("adminPassword") String adminPassword) {
-        if (!Status.getInstance().isAdminAdded()) {
+        /*if (!Status.getInstance().isAdminAdded()) {
             this.users.addAdmin();
             Status.getInstance().setAdminAdded();
-        }
+        }*/
 
         if (this.adminSignIn(adminUsername, adminPassword)) {
-            if (!Status.getInstance().isRoomsCreated()) {
+            /*if (!Status.getInstance().isRoomsCreated()) {
                 this.chatsResource.createRoomChats(5);
             }
             if (!Status.getInstance().isGlobalCreated()) {
                 this.chatsResource.createGlobalChats();
-            }
+            }*/
             if (user.getRole().equals("orderly")) {
                 user.setRooms(new ArrayList<>());
             } 

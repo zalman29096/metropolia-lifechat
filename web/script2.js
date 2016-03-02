@@ -73,7 +73,7 @@ $(document).ready(function () {
             // Logic for opened connection
             console.log('Connection successfully opened');
 
-            webSocketSend(5, 0, 'test', '');
+            webSocketSend(0, 0, 'test', '');
         };
 
         socket.onmessage = function (msg) {
@@ -172,12 +172,14 @@ $(document).ready(function () {
             contentType: false,
             dataType: false,
             processData: false,
+            enctype:'multipart/form-data',
             success: function (data, status) {
                 console.log(data);
                 console.log(status);
                 //$("#imgTest").append("<img src='images/" + data +"'>");
                 if (status === "success"){
-                    //$("#imgTest").append("<a href='files/" + data +"' target='_blank' download>Download</a>");
+                    $("#imgTest").append("<a href='/Project/rest/file/" + data +"' target='_blank' download>Download</a>");
+                    //$("#imgTest").append("<a href='/Project/rest/file/" + data +"'>Download</a>");
                     webSocketSend(chatId, 4, data);
                 }
                 

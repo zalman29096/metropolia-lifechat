@@ -3,42 +3,88 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package collections;
 
+import models.User;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import filesController.SavingToFiles;
 
 /**
  *
  * @author kirak
  */
-public class Users {
+public final class UsersCollection implements Serializable {
 
     private final Map<String, User> users;
+    private boolean adminAdded;
 
-    private Users() {
-        this.users = Collections.synchronizedMap(new HashMap<String, User>());
+    private UsersCollection() {
+        if (this.restoreUsers() == null){
+            this.users = Collections.synchronizedMap(new HashMap<String, User>());
+            this.adminAdded = false;
+        }else {
+            this.users = Collections.synchronizedMap(new HashMap<String, User>(this.restoreUsers().getUsersMap()));
+            this.adminAdded = this.restoreUsers().isAdminAdded();
+        }
+        if (!this.adminAdded) {
+            this.addAdmin();
+            this.adminAdded = true;
+        }
     }
 
-    public static Users getInstance() {
+    public static UsersCollection getInstance() {
         return UsersHolder.INSTANCE;
     }
 
     private static class UsersHolder {
 
-        private static final Users INSTANCE = new Users();
+        private static final UsersCollection INSTANCE = new UsersCollection();
     }
 
+    private UsersCollection restoreUsers() {
+        UsersCollection retval = null;
+        try {
+            FileInputStream in = new FileInputStream("users.ser");
+            ObjectInputStream obin = new ObjectInputStream(in);
+            retval = (UsersCollection) obin.readObject();
+            obin.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not open users.ser");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error reading file");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error reading object");
+            e.printStackTrace();
+        }
+        return retval;
+    }
+
+    /*private Object readResolve() throws ObjectStreamException {
+        return UsersHolder.INSTANCE;
+    }*/
     public boolean addUser(String username, User user) {
         if (!this.users.containsKey(username)) {
             this.users.put(username, user);
+            new SavingToFiles().saveUsers();
             return true;
         } else {
             return false;
         }
+    }
+
+    public boolean isAdminAdded() {
+        return adminAdded;
     }
 
     public boolean signIn(String username, String password) {
@@ -62,7 +108,7 @@ public class Users {
 
     public ArrayList<String> getOrderlies() {
         ArrayList<String> retval = new ArrayList<>();
-        Collection<User> users = Users.getInstance().getUsers();
+        Collection<User> users = UsersCollection.getInstance().getUsers();
         for (User user : users) {
             if (user.getRole().equals("orderly")) {
                 retval.add(user.getUsername());
@@ -87,6 +133,11 @@ public class Users {
         return this.users.get(username);
     }
 
+    public Map<String, User> getUsersMap() {
+        return this.users;
+    }
+
+    
     public void addAdmin() {
         User admin = new User("", "", "", "admin");
         admin.setUsername("admin");

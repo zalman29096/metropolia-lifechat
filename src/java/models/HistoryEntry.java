@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package models;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author kirak
  */
 @XmlRootElement
-public class HistoryEntry {
+public class HistoryEntry implements Serializable{
 
     private int chatId;
     private int flag;

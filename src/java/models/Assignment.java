@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,7 +16,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author kirak
  */
 @XmlRootElement
-public class Assignment {
+public class Assignment implements Serializable{
 
     private String usernameFrom;
     private ArrayList<String> usersPending;

@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package models;
 
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import collections.UsersCollection;
 
 /**
  *
@@ -30,7 +31,7 @@ public class RoomChat extends Chat {
     @Override
     public void addUser(String username) {
         if (!this.hasUser(username)) {
-            ArrayList<String> rooms = Users.getInstance().getUser(username).getRooms();
+            ArrayList<String> rooms = UsersCollection.getInstance().getUser(username).getRooms();
             if (rooms != null) {
                 if (rooms.contains(this.roomNumber)) {
                     super.addUser(username);
