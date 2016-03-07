@@ -4,12 +4,12 @@
  * and open the template in the editor.
  */
 
-
+var message_html = "<div class = 'message %CLASS%'><h5>%SENDER% : %TEXT%</h5><h6>%DATE%</h6></div>";
+var cur_usr;
 $(document).ready(function () {
     var username;
     var role;
     var socket;
-
     $.ajax({
         type: 'GET',
         url: '/Project/rest/users/auth',
@@ -20,11 +20,12 @@ $(document).ready(function () {
             } else {
                 $("#username").append(data);
                 username = data;
+                cur_usr = data;
                 webSocket();
             }
         }
     });
-
+    $("#getGlbChat").trigger("click")
     $("#getUsers").click(function () {
         $(".global-chat").hide();
         $("#roomChats").hide();
@@ -56,14 +57,14 @@ $(document).ready(function () {
             // 6-assignment done (assignmentId inside chatId)
             //orderly should only see new assignments and the ones that he has accepted or completed
             //doctor or nurse should see all assignments that he or she has created(all : new, accpeted, completed)
-           // console.log(msg);
+            // console.log(msg);
             var json = JSON.parse(msg.data);
             console.log(json);
             /*if (json.chat === "global") {
-                $("#globalMessages").append(json.username + ':' + json.message + '\n');
-            } else if (json.chat === "room") {*/
-                var id = "#" + json.chatId+"chat";
-                $(id).append(json.username + ':' + json.message + '\n');
+             $("#globalMessages").append(json.username + ':' + json.message + '\n');
+             } else if (json.chat === "room") {*/
+            var id = "#" + json.chatId + "chat";
+            $(id).append(json.username + ':' + json.message + '\n');
             //}
 
         };
@@ -108,7 +109,7 @@ $(document).ready(function () {
             }
         });
     });
-    
+
     $("#uploadFile").click(function (event) {
         var file = $('input[name="file"').get(0).files[0];
 
@@ -123,17 +124,17 @@ $(document).ready(function () {
             contentType: false,
             dataType: false,
             processData: false,
-            enctype:'multipart/form-data',
+            enctype: 'multipart/form-data',
             success: function (data, status) {
                 console.log(data);
                 console.log(status);
                 //$("#imgTest").append("<img src='images/" + data +"'>");
-                if (status === "success"){
-                    $("#imgTest").append("<a href='/Project/rest/file/" + data +"' target='_blank' download>Download</a>");
+                if (status === "success") {
+                    $("#imgTest").append("<a href='/Project/rest/file/" + data + "' target='_blank' download>Download</a>");
                     //$("#imgTest").append("<a href='/Project/rest/file/" + data +"'>Download</a>");
                     webSocketSend(chatId, 4, data);
                 }
-                
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.log(textStatus);
@@ -167,127 +168,146 @@ $(document).ready(function () {
     function writeUsersToView(data) {
         $("#users").append("<button  class='user' type='button' id=" + data + "> " + data + "</button><br>");
     }
+    function prepareRoomsNav(data){
+        return "<li role='presentation' class ='room-nav' data-room = '"+data.chatId+"'><a href='#'>Room "+data.chatId+"</a></li>";
+    }
+    $(document.body).on("click", ".room-nav", function(){
+        $(".room-chat").hide();
+        $("#"+$(this).data("room")+"chat").show();
+    })
     function createRoomChatHTML(data) {
-        $("#roomChats").append("<h3>Room " + data.roomNumber + "</h3> <textarea class= 'form-control' id = '" + data.chatId + "chat' readonly = 'readonly' rows = '10' cols = '45'></textarea><br> \n\
-                                        <input class= 'form-control msg-input'  type = 'text' placeholder = 'Message' / > \n\
-                                        <button style = 'margin : 15px' type = 'button' data-chat='" + data.chatId + "' class = 'btn btn-md btn-success sendMessage' > Send </button><br>");
+        $("#roomChatContainer").append("<div id = '"+data.chatId+"chat' class = 'room-chat' style = 'display : none'></div>");
     }
     function createPrivateChatHTML(data) {
         var usr_str = "";
-        if(data.users.constructor === Array){
-            data.users.forEach(function(usr){
-                usr_str += usr+", ";
+        if (data.users.constructor === Array) {
+            data.users.forEach(function (usr) {
+                usr_str += usr + ", ";
             })
             usr_str = usr_str.substring(0, usr_str.length - 2);
-        }else{
+        } else {
             usr_str = data.users;
         }
-        $("#privateChats").append("<h3>" + usr_str + "</h3>"+
-                                        "<button class = 'btn btn-danger btn-md ajax-button' data-action = '/Project/rest/chats/privateChat/' data-add-to-url ='"+data.chatId+"' data-callback ='leaveChat' data-type ='DELETE'>Leave chat</button>"+
-                                        "<button class = 'btn btn-success btn-md add-user' data-chat = '" + data.chatId + "'>Add user</button>"+
-                                        "<textarea class= 'form-control' id = '" + data.chatId + "chat' readonly = 'readonly' rows = '10' cols = '45'></textarea><br>"+
-                                        "<input class= 'form-control msg-input'  type = 'text' placeholder = 'Message' / > "+
-                                        "<button style = 'margin : 15px' type = 'button' data-chat='" + data.chatId + "' class = 'btn btn-md btn-success sendMessage' > Send </button><br>");
+        $("#privateChats").append("<h3>" + usr_str + "</h3>" +
+                "<button class = 'btn btn-danger btn-md ajax-button' data-action = '/Project/rest/chats/privateChat/' data-add-to-url ='" + data.chatId + "' data-callback ='leaveChat' data-type ='DELETE'>Leave chat</button>" +
+                "<button class = 'btn btn-success btn-md add-user'  data-chat = '" + data.chatId + "'>Add user</button>" +
+                "<textarea class= 'form-control' id = '" + data.chatId + "chat' readonly = 'readonly' rows = '10' cols = '45'></textarea><br>" +
+                "<input class= 'form-control msg-input'  type = 'text' placeholder = 'Message' / >" +
+                "<button style = 'margin : 15px' type = 'button' data-chat='" + data.chatId + "' class = 'btn btn-md btn-success sendMessage' > Send </button><br>");
     }
     function createGlobalChatHTML(data) {
-        $("#globalChat").append("<textarea class= 'form-control' id = '" + data.chatId + "chat' readonly = 'readonly' rows = '10' cols = '45'></textarea><br> \n\
-                                        <input class= 'form-control msg-input'  type = 'text' placeholder = 'Message' / > \n\
-                                        <button style = 'margin : 15px' type = 'button' data-chat='" + data.chatId + "' class = 'btn btn-md btn-success sendMessage' > Send </button><br>");
+        $("#globalChatContainer").prepend("<div id = '"+data.chatId+"chat'> </div>");
+        $("#sendGlobal").data("chat", data.chatId);
     }
     var makeRoomChats = function (data) {
-            $("#globalChat").hide();
-            $("#roomChats").show();
-            $("#privateChatsContainer").hide();
-            $(".active").removeClass("active");
-            $("#getRoomChats").addClass("active");
-            console.log(data);
-            var x2js = new X2JS();
-            var chats = x2js.xml2json(data);
-            console.log(chats);
-            $("#roomChats").html("");
-            chats.roomChats.roomChat.forEach(function(cht){
-                $("#getHistory").data("add-to-url", cht.chatId);
-                $("#getHistory").trigger("click");
-                createRoomChatHTML(cht);
-            });
-        }
-    var makeGlobalChat = function (data) {
-            $("#globalChat").show();
-            $("#roomChats").hide();
-            $("#privateChatsContainer").hide();
-            $(".active").removeClass("active");
-            $("#getGlobalChat").addClass("active");
-            var x2js = new X2JS();
-            var chat = x2js.xml2json(data);
-            console.log(data)
-            $("#globalChat").html("");
-            $("#getHistory").data("add-to-url", chat.globalChat.chatId);
+        $("#globalChatContainer").hide();
+        $("#roomChatsContainer").show();
+        $("#privateChatsContainer").hide();
+        $(".active").removeClass("active");
+        $("#getRoomChats").addClass("active");
+        console.log(data);
+        var x2js = new X2JS();
+        var chats = x2js.xml2json(data);
+        console.log(chats);
+        $("#roomChats").html("");
+        var nav = "<ul class='nav nav-tabs'>";
+        if(chats.roomChats === "") return;
+        chats.roomChats.roomChat.forEach(function (cht) {
+            nav += prepareRoomsNav(cht);
+            createRoomChatHTML(cht);
+            $("#getHistory").data("add-to-url", cht.chatId);
             $("#getHistory").trigger("click");
-            createGlobalChatHTML(chat.globalChat);
-        }
-    var getHistory = function(data){
+            
+        });
+        nav += "</ul>";
+        console.log(nav);
+        $(nav).insertBefore($("#roomChatContainer"));
+        $(".room-nav").first().trigger("click");
+    }
+    var makeGlobalChat = function (data) {
+        $("#globalChat").show();
+        $("#roomChats").hide();
+        $("#privateChatsContainer").hide();
+        $(".active").removeClass("active");
+        $("#getGlobalChat").addClass("active");
+        var x2js = new X2JS();
+        var chat = x2js.xml2json(data);
+        console.log(data)
+        createGlobalChatHTML(chat.globalChat);
+        $("#globalChat").html("");
+        $("#getHistory").data("add-to-url", chat.globalChat.chatId);
+        $("#getHistory").trigger("click");
+        
+    }
+    var getHistory = function (data) {
         var x2js = new X2JS();
         var hist = x2js.xml2json(data);
-        if(hist.historyEntries.historyEntry){
-            if(hist.historyEntries.historyEntry.constructor === Array){
-                hist.historyEntries.historyEntry.forEach(function(ent){
-                    var id = "#" + ent.chatId+"chat";
-                    $(id).append(ent.username + ':' + ent.message + '\n');  
+        if (hist.historyEntries.historyEntry) {
+            if (hist.historyEntries.historyEntry.constructor === Array) {
+                hist.historyEntries.historyEntry.forEach(function (ent) {
+                    var id = "#" + ent.chatId + "chat";
+                    var classs = "message-left";
+                    if(cur_usr ===ent.username) classs = "message-right";
+                    //$(id).append(ent.username + ':' + ent.message + '\n');
+                    $(id).append(message_html.replace(/%TEXT%/g, ent.message).replace(/%SENDER%/g, ent.username).replace(/%DATE%/g, ent.timestamp).replace(/%CLASS%/g, classs));
                 });
             }
-            if(typeof hist.historyEntries.historyEntry === "object"){
-                var id = "#" + hist.historyEntries.historyEntry.chatId+"chat";
-                $(id).append(hist.historyEntries.historyEntry.username + ':' + hist.historyEntries.historyEntry.message + '\n');  
+            if (typeof hist.historyEntries.historyEntry === "object") {
+                var id = "#" + hist.historyEntries.historyEntry.chatId + "chat";
+                var classs = "message-left";
+                if(cur_usr ===hist.historyEntries.historyEntry.username) classs = "message-right";
+                //$(id).append(hist.historyEntries.historyEntry.username + ':' + hist.historyEntries.historyEntry.message + '\n');
+                $(id).append(message_html.replace(/%CLASS%/g, classs).replace(/%TEXT%/g, hist.historyEntries.historyEntry.message).replace(/%SENDER%/g, hist.historyEntries.historyEntry.username).replace(/%DATE%/g, hist.historyEntries.historyEntry.timestamp));
             }
-        } 
+        }
     }
-    
-    var getPrivateChats = function(data){
-            $("#globalChat").hide();
-            $("#roomChats").hide();
-            $("#privateChatsContainer").show();
-            $(".active").removeClass("active");
-            $("#getPrivateChats").addClass("active");
-            //console.log(data);
-            var x2js = new X2JS();
-            var chats = x2js.xml2json(data);
-            console.log(chats);
-            $("#privateChats").html("");
-            if(chats.privateChats === "")return;
-            if(chats.privateChats.privateChat.constructor === Array){
-                chats.privateChats.privateChat.forEach(function(cht){
-                    $("#getHistory").data("add-to-url", cht.chatId);
-                    $("#getHistory").trigger("click");
-                    createPrivateChatHTML(cht);
-                });
-            }else{
-                $("#getHistory").data("add-to-url", chats.privateChats.privateChat.chatId);
+
+    var getPrivateChats = function (data) {
+        $("#globalChat").hide();
+        $("#roomChats").hide();
+        $("#privateChatsContainer").show();
+        $(".active").removeClass("active");
+        $("#getPrivateChats").addClass("active");
+        //console.log(data);
+        var x2js = new X2JS();
+        var chats = x2js.xml2json(data);
+        console.log(chats);
+        $("#privateChats").html("");
+        if (chats.privateChats === "")
+            return;
+        if (chats.privateChats.privateChat.constructor === Array) {
+            chats.privateChats.privateChat.forEach(function (cht) {
+                $("#getHistory").data("add-to-url", cht.chatId);
                 $("#getHistory").trigger("click");
-                createPrivateChatHTML(chats.privateChats.privateChat);
-            }
+                createPrivateChatHTML(cht);
+            });
+        } else {
+            $("#getHistory").data("add-to-url", chats.privateChats.privateChat.chatId);
+            $("#getHistory").trigger("click");
+            createPrivateChatHTML(chats.privateChats.privateChat);
+        }
     }
-    
-    var createPrivateChat = function(){
+
+    var createPrivateChat = function () {
         $("#getPrivateChats").trigger("click");
     }
-    var leaveChat = function(){
+    var leaveChat = function () {
         $("#getPrivateChats").trigger("click");
     }
     var addUserToChat = function(){
         $("#usrss").modal("hide");
         $("#getPrivateChats").trigger("click");
     }
-    
     var callbacks = {
-        justLog : function(data){
+        justLog: function (data) {
             console.log(data);
         },
-        createRoomChats : makeRoomChats,
-        createGlobalChat : makeGlobalChat,
-        getPrivate : getPrivateChats,
-        getHistory : getHistory,
-        createPrivate : createPrivateChat,
-        leaveChat : leaveChat,
+        createRoomChats: makeRoomChats,
+        createGlobalChat: makeGlobalChat,
+        getPrivate: getPrivateChats,
+        getHistory: getHistory,
+        createPrivate: createPrivateChat,
+        leaveChat: leaveChat,
         addUser : addUserToChat
 
     };
@@ -321,18 +341,22 @@ $(document).ready(function () {
     $(document.body).on("change", "#pickUser", function () {
         $("#addUserToChat").data("add-to-url", "/"+chat_to_add_user_to+"/"+$(this).val());
     });
-    $(document.body).on("click", ".ajax-button", function(){
-        var add_to_url =$(this).data("add-to-url");
-        if(!add_to_url) add_to_url = "";
+    $(document.body).on("click", ".ajax-button", function () {
+        var add_to_url = $(this).data("add-to-url");
+        if (!add_to_url)
+            add_to_url = "";
         var act = $(this).data("action");
         var callback = callbacks[$(this).data("callback")];
         var type = $(this).data("type");
         console.log(act)
         $.ajax({
-            url : act+add_to_url,
-            type : type,
-            success : function(data){console.log(data);callback(data);}
+            url: act + add_to_url,
+            type: type,
+            success: function (data) {
+                console.log(data);
+                callback(data);
+            }
         });
     });
-    $("#getGlobalChat").trigger("click");
+    $("#getGlbChat").trigger("click");
 });

@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package resource;
 
+import collections.AssignmentsCollection;
+import collections.UsersCollection;
+import models.Assignment;
+import models.User;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +34,11 @@ public class AssignmentsResource {
     private HttpServletRequest request;
 
     private final AssignmentsCollection assignments;
-    private final Users users;
+    private final UsersCollection users;
 
     public AssignmentsResource() {
         this.assignments = AssignmentsCollection.getInstance();
-        this.users = Users.getInstance();
+        this.users = UsersCollection.getInstance();
     }
 
     @GET

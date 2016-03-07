@@ -3,12 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package resource;
 
+import collections.UsersCollection;
+import collections.ChatsCollection;
+import models.RoomChat;
+import models.PrivateChat;
+import models.HistoryEntry;
+import models.GlobalChat;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.websocket.EncodeException;
@@ -33,11 +37,11 @@ public class ChatsResource {
     private HttpServletRequest request;
 
     private final ChatsCollection chats;
-    private final Users users;
+    private final UsersCollection users;
 
     public ChatsResource() {
         this.chats = ChatsCollection.getInstance();
-        this.users = Users.getInstance();
+        this.users = UsersCollection.getInstance();
     }
 
     /*@Path("/global")
@@ -114,18 +118,18 @@ public class ChatsResource {
         return this.chats.getNewMessagesCount(chatId, this.checkSession());
     }
     
-    public void createRoomChats(int amount) {
+    /*public void createRoomChats(int amount) {
         for (int i = 0; i < amount; i++) {
             this.chats.addRoomChat(Integer.toString(i));
         }
         Status.getInstance().setRoomsCreated();
-    }
+    }*/
 
-    public void createGlobalChats() {
+    /*public void createGlobalChats() {
         this.chats.addGlobalChat("doctor");
         this.chats.addGlobalChat("nurse");
         Status.getInstance().setGlobalCreated();
-    }
+    }*/
 
     public void addUserToGlobalChat(String role, String username) {
         int chatId = 0;

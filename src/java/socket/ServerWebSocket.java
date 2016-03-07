@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package socket;
 
+import collections.ChatsCollection;
+import models.HistoryEntry;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,9 +40,6 @@ public class ServerWebSocket {
         String username = (String) userSession.getUserProperties().get("username");
         HistoryEntry retval = ChatsCollection.getInstance().addMessage(message.getChatId(), username, message.getMessage(), message.getFlag(), message.getDescription());
         this.sendMessage(ChatsCollection.getInstance().getUsers(message.getChatId()), retval);
-        System.out.println("testing");
-        System.out.println(retval);
-        System.out.println(message.getChatId());
     }
 
     @OnClose

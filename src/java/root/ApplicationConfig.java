@@ -31,10 +31,10 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(root.AssignmentsResource.class);
-        resources.add(root.ChatsResource.class);
-        resources.add(root.FileUploadManager.class);
-        resources.add(root.UsersResource.class);
+        resources.add(filesController.FileUploadDownloadManager.class);
+        resources.add(resource.AssignmentsResource.class);
+        resources.add(resource.ChatsResource.class);
+        resources.add(resource.UsersResource.class);
     }
     
 }

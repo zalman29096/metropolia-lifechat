@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package models;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @XmlTransient
 @XmlSeeAlso({GlobalChat.class, RoomChat.class, PrivateChat.class})
-public abstract class Chat {
+public abstract class Chat implements Serializable{
 
     private ArrayList<HistoryEntry> history;
     ArrayList<String> users;

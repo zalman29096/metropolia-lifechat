@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package socket;
 
 /**
  *
@@ -21,7 +21,7 @@ public class ChatMessage {
     private int chatId;
     private String message;
     private String description;
-    private int flag; //0-simple message; 1-emergency message; 2-newAssignment 
+    private int flag; 
 
     public ChatMessage() {
     }

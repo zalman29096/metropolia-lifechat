@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package socket;
 
-import java.math.BigDecimal;
+import models.HistoryEntry;
 import javax.json.Json;
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;

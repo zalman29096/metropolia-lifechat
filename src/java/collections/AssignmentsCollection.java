@@ -3,15 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package root;
+package collections;
 
+import models.Assignment;
+import models.HistoryEntry;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.websocket.EncodeException;
+import filesController.SavingToFiles;
+import socket.ServerWebSocket;
 
 /**
  *
@@ -23,8 +31,13 @@ public class AssignmentsCollection {
     private int assignmentCounter;
 
     private AssignmentsCollection() {
-        this.assignmentCounter = 0;
-        this.assignments = Collections.synchronizedMap(new HashMap<Integer, Assignment>());
+        if (this.restoreAssignments() == null) {
+            this.assignmentCounter = 0;
+            this.assignments = Collections.synchronizedMap(new HashMap<Integer, Assignment>());
+        }else{
+            this.assignmentCounter = this.restoreAssignments().getAssignmentCounter();
+            this.assignments = Collections.synchronizedMap(new HashMap<Integer, Assignment>(this.restoreAssignments().getAssignments()));
+        }
     }
 
     public static AssignmentsCollection getInstance() {
@@ -36,8 +49,36 @@ public class AssignmentsCollection {
         private static final AssignmentsCollection INSTANCE = new AssignmentsCollection();
     }
 
+    private AssignmentsCollection restoreAssignments() {
+        AssignmentsCollection retval = null;
+        try {
+            FileInputStream in = new FileInputStream("assignments.ser");
+            ObjectInputStream obin = new ObjectInputStream(in);
+            retval = (AssignmentsCollection) obin.readObject();
+            obin.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not open assignments.ser");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Error reading file");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            System.out.println("Error reading object");
+            e.printStackTrace();
+        }
+        return retval;
+    }
+
+    public int getAssignmentCounter() {
+        return assignmentCounter;
+    }
+
+    public Map<Integer, Assignment> getAssignments() {
+        return assignments;
+    }
+
     public int createAssignment(String message, String usernameFrom) throws IOException, EncodeException {
-        ArrayList<String> orderlies = Users.getInstance().getOrderlies();
+        ArrayList<String> orderlies = UsersCollection.getInstance().getOrderlies();
         int assignmentId = -1;
         if (orderlies != null) {
             assignmentId = this.assignmentCounter;
@@ -45,6 +86,7 @@ public class AssignmentsCollection {
             this.assignments.put(assignment.getAssignmentId(), assignment);
             this.assignmentCounter++;
             this.sendNotification(assignment);
+            new SavingToFiles().saveAssignments();
         }
         System.out.println("assignmentId" + assignmentId);
         return assignmentId;
@@ -59,6 +101,7 @@ public class AssignmentsCollection {
                     assignment.setUserAccepted(username);
                     sendNotification(assignment);
                     assignment.setUsersPendingToNull();
+                    new SavingToFiles().saveAssignments();
                 }
             }
         }
@@ -73,6 +116,7 @@ public class AssignmentsCollection {
                     assignment.setUserDone(username);
                     assignment.setUserAccepted("");
                     sendNotification(assignment);
+                    new SavingToFiles().saveAssignments();
                 }
             }
         }
