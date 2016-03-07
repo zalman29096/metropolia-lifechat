@@ -4,53 +4,85 @@
  * and open the template in the editor.
  */
 $(document).ready(function () {
-    $("#role").change(function(){
-        if($(this).val() === "orderly") $("#rooms-select").hide();
-        else $("#rooms-select").show();
+
+    $.ajax({
+        type: 'GET',
+        url: '/Project/rest/users/auth',
+        success: function (data) {
+            if (data !== undefined) {
+                window.location.replace("cabinet.html");
+            }
+        }
     });
-    $("#register-show").click(function(){
+
+    $("#role").change(function () {
+        if ($(this).val() === "orderly")
+            $("#rooms-select").hide();
+        else
+            $("#rooms-select").show();
+    });
+
+    $("#register-show").click(function () {
         $(".login-box").hide();
         $(".register-box").show();
     });
-    $("#login-show").click(function(){
+
+    $("#login-show").click(function () {
+        $("#user-registered").hide();
+        $("#admin-denied").hide();
         $(".login-box").show();
         $(".register-box").hide();
-    });
-    $('#signup-form').submit(function (e) {
-        e.preventDefault();
-        var x2js = new X2JS();
-        var form = $(this).serializeJSON();
-        var xmlDoc = x2js.json2xml(form);
-        var url = '/Project/rest/auth/signUp';
-        $.ajax({
-            type: 'POST',
-            url: url,
-            contentType: 'application/xml',
-            processData: false,
-            data: xmlDoc,
-            success : function(data){
-                if(data == "true"){
-                    $(".login-box").show();
-                    $(".register-box").hide(); 
-                    $("#user-registered").hide();
-                }else{
-                    $("#user-registered").show();
-                }
-            }
-        });
+        $("#passwords-match").hide();
     });
 
-    $('#login-form').submit(function (e) {
+    $("#signup-form").submit(function (e) {
         e.preventDefault();
-        var username = $('#signInUsername').val();
-        var password = $('#signInPassword').val();
-        var url = '/Project/rest/auth/signIn/' + username + '/' + password;
+        if ($("#password").val() !== $("#password2").val()) {
+            $("#passwords-match").show();
+            $("#user-registered").hide();
+            $("#admin-denied").hide();
+        } else {
+            $("#passwords-match").hide();
+            var x2js = new X2JS();
+            var form = $(this).serializeJSON();
+            console.log(form);
+            var xmlDoc = x2js.json2xml(form);
+            var url = "/Project/rest/users/auth/signUp/" + $("#password").val() + "/" + $("#adminUsername").val() + "/" + $("#adminPassword").val();
+            $.ajax({
+                type: 'POST',
+                url: url,
+                contentType: 'application/xml',
+                processData: false,
+                data: xmlDoc,
+                success: function (data) {
+                    if (data === "true") {
+                        $(".login-box").show();
+                        $(".register-box").hide();
+                        $("#user-registered").hide();
+                        $("#admin-denied").hide();
+                    } else if (data === "same-user") {
+                        $("#user-registered").show();
+                        $("#admin-denied").hide();
+                    } else {
+                        $("#user-registered").hide();
+                        $("#admin-denied").show();
+                    }
+                }
+            });
+        }
+    });
+
+    $("#login-form").submit(function (e) {
+        e.preventDefault();
+        var username = $("#signInUsername").val();
+        var password = $("#signInPassword").val();
+        var url = '/Project/rest/users/auth/signIn/' + username + '/' + password;
         $.ajax({
             type: 'POST',
             url: url,
             success: function (data) {
                 if (data === "true") {
-                    window.location.replace("/Project/authenticated.html");
+                    window.location.replace("/Project/cabinet.html");
                 } else {
                     alert("no");
                 }

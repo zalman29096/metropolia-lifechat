@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public abstract class Chat {
 
     private ArrayList<HistoryEntry> history;
-    private ArrayList<String> users;
+    ArrayList<String> users;
     private int chatId;
     private HashMap<String, Integer> newMessages;
 

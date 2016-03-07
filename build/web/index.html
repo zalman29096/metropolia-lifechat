@@ -17,7 +17,6 @@ and open the template in the editor.
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
         <link rel="stylesheet" href="style.css" >
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-        
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" ></script>
     </head>
     <body>
@@ -28,17 +27,25 @@ and open the template in the editor.
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> 
                         <strong>Oups!</strong> This username is already taken. 
                     </div>
+                    <div class="alert alert-danger alert-dismissible fade in" id ="passwords-match" role="alert" style = "display:none"> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> 
+                        <strong>Oups!</strong> The passwords should match. 
+                    </div>
+                    <div class="alert alert-danger alert-dismissible fade in" id ="admin-denied" role="alert" style = "display:none"> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> 
+                        <strong>Admin, access denied.</strong> 
+                    </div>
                     <div class = "box login-box">
                         <h3>Login</h3>
                         <hr/>
-                        <form  id = "login-form" method = "post" action = "/login">
+                        <form  id = "login-form">
                             <div class = "form-group">
                                 <label>Username</label>
-                                <input class = "form-control" name = "username" id="signInUsername" type = "text" />
+                                <input class = "form-control" name = "username" id="signInUsername" type = "text" required/>
                             </div>
                             <div class = "form-group">
                                 <label>Password</label>
-                                <input class = "form-control" name = "password" id="signInPassword" type = "password" />
+                                <input class = "form-control" name = "password" id="signInPassword" type = "password" required/>
                             </div>
                             <div class = "form-group">
                                 <button type = "submit" class = "btn btn-md btn-success" >Login</button>
@@ -56,7 +63,11 @@ and open the template in the editor.
                             </div>
                             <div class = "form-group">
                                 <label>Password</label>
-                                <input class = "form-control" name = "user[password]" type = "password" required />
+                                <input class = "form-control" id="password" type = "password" required />
+                            </div>
+                            <div class = "form-group">
+                                <label>Confirm password</label>
+                                <input class = "form-control" id="password2" type = "password" required />
                             </div>
                             <div class = "form-group">
                                 <label>First name</label>
@@ -93,35 +104,23 @@ and open the template in the editor.
                                         <input type="checkbox" name="user[rooms[]]" value="5"> Room 5
                                     </label>
                                 </div>                                
-                            </div>  
+                            </div>
+                            <div class = "form-group">
+                                <label>Admin login</label>
+                                <input class = "form-control" id="adminUsername" type = "text" required />
+                            </div>
+                            <div class = "form-group">
+                                <label>Admin password</label>
+                                <input class = "form-control" id="adminPassword" type = "password" required />
+                            </div> 
                             <div class = "form-group">
                                 <button type = "submit" class = "btn btn-md btn-success" >Register</button>
-                                <a href="#" onclick="return false;" id = "login-show" style = "float : right">Already have account</a>
+                                <a href="#" onclick="return false;" id = "login-show" style = "float : right">Return to login page</a>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <!--<div>
-                <form id="signUpForm">
-                    <input type="text" placeholder="username" id="signUpUsername"/>
-                    <input type="text" placeholder="password" name="user[password]"/>
-                    <input type="text" placeholder="firstname" name="user[firstName]"/>
-                    <input type="text" placeholder="lastname" name="user[lastName]"/>
-                    <input type="text" placeholder="role" name="user[role]"/>
-                    <input type="checkbox" name="user[rooms[]]" value="1"/>1
-                    <input type="checkbox" name="user[rooms[]]" value="2"/>2
-                    <input type="checkbox" name="user[rooms[]]" value="3"/>3
-                    <input type="checkbox" name="user[rooms[]]" value="4"/>4
-                    <button  type="button" id="signUp">Sign Up</button><br/>
-                </form>
-            </div>
-            <div>
-                <input type="text" placeholder="username" id="signInUsername"/>
-                <input type="text" placeholder="password" id="signInPassword"/>
-                <button  type="button" id="signIn">Sign In</button><br/>
-            </div>
-            <div id="test"></div>-->
         </div>
     </body>
 </html>
