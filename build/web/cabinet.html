@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
+        <script src="jquery-2.2.0.js" type="text/javascript"></script>
+        <script type="text/javascript" src="script2.js"></script>
+        <script src="xml2json.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div class = "row">
+            <div class = "col-md-8">
+                <div class="alert alert-success" role="alert"><h2>Hi! <span id="username"></span></h2></div>
+            </div>
+            <div class = "col-md-4">
+                <button  type="button" class ="btn btn-lg btn-warning" id="logOut">Log out</button>
+            </div>
+        </div>
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active" id="getGlobalChat"><a href="#">Global chat</a></li>
+            <li role="presentation" id="getRoomChats"><a href="#">Rooms</a></li>
+            <li role="presentation"><a href="#">Friends</a></li>
+        </ul>
+        <div class = "global-chat" id="globalMessageBlock">
+            <textarea id="globalMessages" readonly="readonly" class = "form-control" rows="10" cols="45"></textarea><br>
+            <input type="text" class = "form-control" placeholder="Message" id="globalMessage"/>
+            <button  type="button" class =" btn btn-md btn-success" id="sendGlobalMessage" style = "margin : 15px;">Send</button>
+        </div>
+        <div id="roomChats" style = "display : none"></div>
+        <button  type="button" id="getUsers">get users</button>
+        <div id="users">Users:</div>
+        <button  type="button" id="getHistory">get history</button>
+        <button  type="button" id="createPrivateChat">createPrivateChat</button>
+        <button  type="button" id="getPrivateChats">get Private chats</button>
+        <button  type="button" id="leavePrivateChat">leave chat</button>
+        <button  type="button" id="addToChat">addToChat</button>
+        <button  type="button" id="createAssignment">createAssignment</button>
+        <button  type="button" id="getAssignment">getAssignment</button>
+        <button  type="button" id="getAssignments">getAssignments</button>
+        <button  type="button" id="acceptAssignment">acceptAssignment</button>
+        <button  type="button" id="assignmentDone">assignmentDone</button>
+        </br>
+            <p>Select a file : <input type="file" name="file" /></p>
+            <button  type="button" id="uploadFile">uploadFile</button>
+            <div id="imgTest"></div>
+            
+            <button  type="button" id="newMessages">newMEssages</button>
+    </body>
+</html>

@@ -1,80 +1,169 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
-    <head>
-        <title></title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" >
-        <script src="jquery-2.2.0.js" type="text/javascript"></script>
-        <script type="text/javascript" src="script2.js"></script>
-        <script src="xml2json.js" type="text/javascript"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    </head>
-    <body>
-        <div class="modal fade" id="usrss" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">Add user to chat</h4>
-                    </div>
-                    <div class="modal-body">
-                        <select id = "pickUser" class = "form-control">
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" id ="addUserToChat" class="btn btn-primary ajax-button " data-action = "/Project/rest/chats/privateChat" data-add-to-url = "" data-callback ="addUser" data-type ="PUT">Add</button>
-                    </div>
-                </div>
-            </div>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kilo chat</title>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+	<style>
+		.chat-discussion{
+			height : 60vh
+		}
+		.emergency-message{
+			background: rgba(236, 71, 88, 0.5);
+			color : #FFF;
+		}
+	</style>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+
+            </li>
+            <li>
+                <a href="cabinet.html"><i class="fa fa-users"></i> <span class="nav-label">Public chat</a>
+            </li>
+            <li>
+                <a href="rooms.html"><i class="fa fa-database"></i> <span class="nav-label">Rooms</span></a>
+            </li>
+            <li >
+                <a href="private_chat.html"><i class="fa fa-star"></i> <span class="nav-label">Private chat</span></a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+
+<div id="page-wrapper" class="gray-bg">
+<div class="row border-bottom">
+    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
         </div>
-        <div class = "container-fluid">
-            <div class = "row">
-                <div class = "col-md-8">
-                    <div class="alert alert-success" role="alert"><h2>Hi! <span id="username"></span></h2></div>
-                </div>
-                <div class = "col-md-4">
-                    <button  type="button" class ="btn btn-lg btn-warning" id="logOut">Log out</button>
-                </div>
-            </div>
-            <ul class="nav nav-tabs">
-                <li role="presentation" id="getGlobalChat" class ="ajax-button active" data-action = "/Project/rest/chats/global" data-callback ="createGlobalChat" data-type ="GET"><a href="#">Global chat</a></li>
-                <li role="presentation" id="getRoomChats" class ="ajax-button" data-action = "/Project/rest/chats/rooms" data-callback ="createRoomChats" data-type ="GET"><a href="#">Rooms</a></li>
-                <li role="presentation" class ="ajax-button" data-action = "/Project/rest/chats/privateChats" data-add-to-url = "" data-callback ="getPrivate" data-type ="GET" id="getPrivateChats"><a href="#">Private chats</a></li>
-            </ul>
+        <ul class="nav navbar-top-links navbar-right">
+            <li>
+                <span class="m-r-sm text-muted welcome-message">Welcome to Kilo chat</span>
+            </li>
+            
+            <li>
+                <a href="login.html">
+                    <i class="fa fa-sign-out"></i> Log out
+                </a>
+            </li>
+        </ul>
 
-            <div id="globalChat" style = "display : none"></div>
+    </nav>
+</div>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Public chat</h2>
+    </div>
+    <div class="col-lg-2">
 
-            <div id="roomChats" style = "display : none"></div>
-            <div id="privateChatsContainer" style = "display : none">
-                <div class = row>
-                    <div class = "col-md-8">
-                        <button  type="button" class ="ajax-button btn btn-mdv btn-primary" data-action = "/Project/rest/chats/privateChat" data-add-to-url = "" data-callback ="createPrivate" data-type ="POST" id="createPrivateChat">createPrivateChat</button>
-                        <div id="privateChats"></div>
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+
+                <div class="ibox chat-view">
+
+                    <div class="ibox-title">
                     </div>
+
+
+                    <div class="ibox-content">
+
+                        <div class="row">
+
+                            <div class="col-md-12 ">
+                                <div class="chat-discussion" id = "currentChat">
+                                </div>
+
+                            </div>
+                            
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="chat-message-form">
+
+                                    <div class="form-group">
+
+                                        <textarea class="form-control message-input" name="message" placeholder="Enter message text"></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+				<div class = "hr-line-dashed"></div>
+				<button class = "btn btn-md btn-success send-global-message" data-flag = "0" data-chat = "">Send</button>
+				<button class = "btn btn-md btn-danger pull-right send-global-message" data-flag = "1" data-chat = "">Emergency</button>
+
+
+                    </div>
+
                 </div>
-            </div>
-
-            <button  type="button" id="getUsers" style = "display:none">get users</button>
-            <div id="users">Users:</div>
-            <button  type="button" style = "display : none" class ="ajax-button" data-action = "/Project/rest/chats/history/" data-add-to-url = "" data-callback ="getHistory" data-type ="GET" id="getHistory">get history</button>
-
-            <button  type="button" class ="ajax-button" data-action = "/Project/rest/assignments/testtesttest" data-add-to-url = "" data-callback ="justLog" data-type ="POST" id="createAssignment">createAssignment</button>
-            <button  type="button" class ="ajax-button" data-action = "/Project/rest/assignments/0" data-add-to-url = "" data-callback ="justLog" data-type ="GET" id="getAssignment">getAssignment</button>
-            <button  type="button" class ="ajax-button" data-action = "/Project/rest/assignments" data-add-to-url = "" data-callback ="justLog" data-type ="GET" id="getAssignments">getAssignments</button>
-            <button  type="button" class ="ajax-button" data-action = "/Project/rest/assignments/acceptAssignment/0" data-add-to-url = "" data-callback ="justLog" data-type ="PUT" id="acceptAssignment">acceptAssignment</button>
-            <button  type="button" class ="ajax-button" data-action = "/Project/rest/assignments/assignmentDone/0" data-add-to-url = "" data-callback ="justLog" data-type ="PUT" id="assignmentDone">assignmentDone</button>
-            </br>
-            <p>Select a file : <input type="file" name="file" /></p>
-            <button  type="button" id="uploadFile">uploadFile</button>
-            <div id="imgTest"></div>
-
-            <button  type="button" id="newMessages" class ="ajax-button" data-add-to-url = "" data-action = "/Project/rest/chats/newMessagesCount/5" data-callback ="justLog" data-type ="GET">newMEssages</button>
         </div>
-    </body>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- Mainly scripts -->
+<script src="js/jquery-2.1.1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<!-- Custom and plugin javascript -->
+<script src="js/inspinia.js"></script>
+<script src="js/plugins/pace/pace.min.js"></script>
+
+<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="js/helper.js"></script>
+
+</body>
+<script>
+	$(document).ready(function(){
+		$.ajax({
+			type: 'GET',
+			url: '/Project/rest/chats/global',
+			success: function (data) {
+				var x2js = new X2JS();
+            			var chat_data = x2js.xml2json(data);
+				$(".send-global-message").data("chat", chat_data.globalChat.chatId);
+				getHistory(chat_data.globalChat.chatId);
+			}
+		});
+	});
+    	$(document.body).on('click', '.send-global-message', function () {
+        	var chatId = $(this).data('chat');
+        	var message = $(".message-input").val();
+        	var flag = $(this).data("flag");
+        	webSocketSend(chatId, 0, message);
+    	});
+</script>
+
+
 </html>
