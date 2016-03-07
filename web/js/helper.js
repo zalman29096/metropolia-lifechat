@@ -12,7 +12,7 @@ var message_html = '<div class="chat-message %RIGHT%">'+
                     '</div>';
 var room_chat_html = '<div class="chat-user room-chat" data-chat = "%CHATID%">'+
                      		'<div class="chat-user-name">'+
-                                 	'<a href="#">%ROOMNAME%</a>'+
+                                 	'<a href="#">%ROOMNAME% </a><span class = "label label-warning new-msgs">0</span>'+
                                 '</div>'+
                      '</div>';
 $(document).ready(function(){
